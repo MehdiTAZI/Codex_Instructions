@@ -1,4 +1,5 @@
 
+# Long running tasks
 <!-- for long running tasks -->
 
 Since this is a long-running task, maintain a TASK_STATE.md file containing:
@@ -11,7 +12,13 @@ The next step
 Update it regularly so the work can be resumed correctly in case of interruption or context compaction.
 
 
+
+
+
+
+
 <!-- PROMPT GENERATION WORKFLOW -->
+# PROMPT GENERATION WORKFLOW 
 
 1 - Brainstorm in ChatGPT Chat ( High ) --> to not consume tokens
 
