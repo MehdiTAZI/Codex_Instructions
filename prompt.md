@@ -1,48 +1,59 @@
+# Reusable Codex Prompts
 
-# Long running tasks
+## 1. Long-Running Tasks
 
-<!-- for long running tasks -->
+### Before starting a long-running task
 
-#Before running first prompt
+```text
+Complete this task through to completion.
 
-Since this is a long-running task, maintain a TASK_STATE.md file containing:
+Because this is a long-running task, maintain a TASK_STATE.md file containing:
 
-What has been completed
-What remains to be done
-Decisions made
-The next step
+- what has been completed;
+- what remains to be done;
+- decisions made;
+- modified or important files;
+- validations already performed;
+- known issues or blockers;
+- the next step.
 
 Update it regularly so the work can be resumed correctly in case of interruption or context compaction.
+```
 
-# After limit reachsed and quota back again ( continue mode ) 
+### Resume after an interruption or quota reset
 
-Continue the work from where you left off. Before resuming, check the current state of the repository, the modified files, the git diff, what has already been completed, and what remains to be done. Do not redo anything that has already been completed. Then continue until the original task is fully completed.
+```text
+Continue.
 
 Before proceeding, accurately reconstruct the current state of the work using:
+
 1. TASK_STATE.md
 2. git status
 3. git diff
 4. the repository files
 5. the remaining available conversation history
-Identify what has already been completed and what still needs to be done. Do not redo completed tasks.
+
+Identify what has already been completed and what still needs to be done.
+Do not redo completed work.
+
 Then continue the original task through to completion.
+```
 
+---
 
+## 2. Prompt Preparation Workflow
 
+For larger or more expensive Codex tasks, prepare the work before execution:
 
-<!-- PROMPT GENERATION WORKFLOW -->
-# PROMPT GENERATION WORKFLOW 
+1. Brainstorm and clarify the requirement in ChatGPT.
+2. Generate or validate the implementation plan.
+3. Generate the final Codex prompt.
+4. Prepare the required inputs, references, examples, or specifications.
+5. Execute the task in Codex.
 
-1 - Brainstorm in ChatGPT Chat ( High ) --> to not consume tokens
+### Suggested organization
 
-2 - Generate the Plan
+- Use one Codex project for each product or repository context.
+- Use a separate chat/thread for a distinct feature or workstream when isolation improves clarity.
 
-3 - Generate the Prompt
-
-4 - Generate necessary inputs
-
-5 - Go to Codex
-
-A - Each project is for a new product
-
-B - Each Chat is for a new feature or functionaly
+These are organizational recommendations, not hard Codex requirements.
