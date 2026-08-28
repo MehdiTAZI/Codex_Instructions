@@ -1,11 +1,11 @@
 # Guide de développement d’un logiciel complet avec Codex
 
-> **Statut :** guide de référence optionnel.  
-> Ce fichier n’a pas vocation à être lu intégralement à chaque tâche. `AGENTS.md` reste la couche d’instructions projet permanente. Codex doit surtout inspecter les specs, le code et les tests directement concernés par le travail courant.
+> **Statut : guide de référence optionnel.**  
+> Ce fichier n’a pas vocation à être relu intégralement à chaque tâche. `AGENTS.md` reste la couche d’instructions permanente du projet. Pour une tâche donnée, Codex doit surtout inspecter les specs, le code, les tests et l’état Git directement concernés.
 
 Ce guide décrit une méthode générique pour construire, maintenir et faire évoluer un logiciel complexe avec Codex.
 
-Il est volontairement **agnostique** :
+Il est volontairement **agnostique** vis-à-vis :
 
 - du langage ;
 - du framework frontend ou backend ;
@@ -16,22 +16,17 @@ Il est volontairement **agnostique** :
 - du système de CI/CD ;
 - de l’outil de déploiement.
 
-Les exemples de chemins et de commandes sont donc indicatifs et doivent être adaptés au dépôt réel.
+Les chemins, exemples et commandes présentés ici doivent donc être adaptés au repository réel.
 
-L’idée centrale est simple :
-
-> La conversation sert à travailler.  
-> Le dépôt sert à mémoriser, transmettre, vérifier et reprendre le travail.
+> **Principe central :** la conversation sert à travailler ; le repository sert à mémoriser, transmettre, vérifier et reprendre le travail.
 
 ---
 
-# 1. Principes directeurs
+## 1. Principes directeurs
 
-## 1.1 Le dépôt est la source de vérité
+### 1.1 Le repository est la source de vérité
 
-Pour un logiciel important, la connaissance durable ne doit pas vivre uniquement dans une conversation avec Codex.
-
-Elle doit être versionnée dans le dépôt.
+Pour un logiciel important, la connaissance durable ne doit pas vivre uniquement dans une conversation avec Codex. Elle doit être versionnée dans le repository.
 
 Structure conceptuelle recommandée :
 
@@ -54,39 +49,39 @@ tests/
 scripts/
 ```
 
-Les responsabilités sont différentes :
+Responsabilités :
 
-- `AGENTS.md` : règles permanentes de travail pour les agents ;
-- `README.md` : onboarding et utilisation du projet ;
-- `specs/modules/` : comportement fonctionnel ;
-- `specs/architecture/` : architecture structurante ;
-- `specs/security/` : modèle et exigences de sécurité ;
-- `specs/data-model/` : modèle de données indépendant de l’implémentation ;
-- `specs/decisions/` : décisions d’architecture durables ;
-- `specs/prompts/` : prompts réutilisables ;
-- `docs/` : exploitation, procédures, documentation technique complémentaire ;
-- code, migrations et tests : implémentation réelle.
+| Élément | Rôle |
+| --- | --- |
+| `AGENTS.md` | Règles permanentes de travail pour les agents |
+| `README.md` | Onboarding, installation et utilisation |
+| `specs/modules/` | Comportement fonctionnel |
+| `specs/architecture/` | Architecture structurante |
+| `specs/security/` | Modèle et exigences de sécurité |
+| `specs/data-model/` | Modèle de données indépendant de l’implémentation |
+| `specs/decisions/` | Décisions d’architecture durables |
+| `specs/prompts/` | Prompts réutilisables |
+| `docs/` | Exploitation, procédures et documentation technique complémentaire |
+| Code + migrations + tests | Implémentation réelle |
 
 Les noms exacts peuvent être adaptés au projet.
 
----
+### 1.2 Codex travaille mieux sur des tâches bornées
 
-## 1.2 Codex travaille mieux sur des tâches bornées
-
-Éviter :
+Éviter les demandes trop larges :
 
 ```text
 Termine tout le module de facturation.
 ```
 
-Préférer une demande structurée avec :
+Préférer une demande structurée contenant :
 
-1. objectif ;
-2. contexte ;
-3. contraintes ;
-4. définition de terminé.
+1. l’objectif ;
+2. le contexte ;
+3. les contraintes ;
+4. la Definition of Done.
 
-Exemple générique :
+Exemple :
 
 ```text
 Lis AGENTS.md, les specs concernées et le code existant.
@@ -109,13 +104,11 @@ Done when :
 - les validations projet passent.
 ```
 
----
-
-## 1.3 Les specs accompagnent le logiciel
+### 1.3 Les specs accompagnent le logiciel
 
 Une fonctionnalité significative doit être décrite indépendamment de son implémentation.
 
-La spec doit répondre principalement à :
+Une bonne spec répond notamment à :
 
 - pourquoi la fonctionnalité existe ;
 - qui l’utilise ;
@@ -129,11 +122,9 @@ La spec doit répondre principalement à :
 
 Pour une correction locale déjà parfaitement spécifiée, une phase documentaire préalable n’est pas obligatoire.
 
----
+### 1.4 La vérification fait partie de l’implémentation
 
-## 1.4 La vérification fait partie de l’implémentation
-
-Une tâche n’est pas terminée lorsque le code a simplement été écrit.
+Une tâche n’est pas terminée lorsque le code est simplement écrit.
 
 Selon le projet, Codex doit exécuter ou vérifier :
 
@@ -147,18 +138,18 @@ Selon le projet, Codex doit exécuter ou vérifier :
 - analyse statique ;
 - contrôle du diff ;
 - validation visuelle des changements UI ;
-- vérifications sécurité ;
+- vérifications de sécurité ;
 - `git diff --check` ou équivalent.
 
 Les commandes exactes doivent être définies dans `AGENTS.md`.
 
 ---
 
-# 2. Les surfaces de configuration et de connaissance
+## 2. Les surfaces de configuration et de connaissance
 
-## 2.1 `AGENTS.md`
+### 2.1 `AGENTS.md`
 
-`AGENTS.md` est la couche de règles durables du dépôt.
+`AGENTS.md` est la couche de règles durables du repository.
 
 Il doit être :
 
@@ -171,7 +162,7 @@ Y mettre notamment :
 
 - commandes de build, lint et test ;
 - conventions obligatoires ;
-- architecture générale du dépôt ;
+- architecture générale du repository ;
 - règles de sécurité ;
 - règles de documentation ;
 - restrictions importantes ;
@@ -185,17 +176,11 @@ Ne pas y mettre :
 - journal de projet ;
 - contexte temporaire d’une feature.
 
-Bonne règle :
-
 > Si Codex répète régulièrement la même erreur, transformer la correction en règle durable dans `AGENTS.md` ou dans un `AGENTS.md` local au sous-répertoire concerné.
 
----
-
-## 2.2 `specs/modules/`
+### 2.2 `specs/modules/`
 
 Les specs fonctionnelles vivent dans `specs/modules/`.
-
-Exemple :
 
 ```text
 specs/
@@ -208,45 +193,33 @@ specs/
     notifications.md
 ```
 
-Une spec module peut contenir :
+Structure possible :
 
 ```markdown
 # Module
 
 ## Objectif
-
 ## Acteurs
-
 ## Concepts métier
-
 ## Règles métier
-
 ## Données manipulées
-
 ## Parcours principaux
-
 ## Cas limites
-
 ## Permissions
-
 ## Critères d’acceptation
 ```
 
-Ces fichiers doivent décrire **ce que fait le logiciel**, pas comment un framework particulier le réalise.
+Ces fichiers décrivent **ce que fait le logiciel**, pas la manière dont un framework particulier l’implémente.
 
 ---
 
-# 3. Les trois specs transverses minimales
+## 3. Les trois specs transverses minimales
 
-En plus des specs fonctionnelles, un logiciel significatif devrait disposer de trois descriptions transverses.
+En plus des specs fonctionnelles, un logiciel significatif devrait disposer de trois descriptions transverses : architecture, sécurité et modèle de données.
 
-L’objectif n’est pas de produire une documentation lourde.
+L’objectif n’est pas de produire une documentation lourde. Quelques pages bien maintenues valent mieux qu’une architecture de 100 pages jamais relue.
 
-Quelques pages bien maintenues valent mieux qu’une architecture de 100 pages jamais relue.
-
----
-
-## 3.1 Spec d’architecture structurante
+### 3.1 Spec d’architecture structurante
 
 Fichier recommandé :
 
@@ -256,93 +229,34 @@ specs/architecture/system-architecture.md
 
 Cette spec décrit uniquement les choix structurants qui influencent plusieurs modules.
 
-Elle peut rester courte.
+Elle peut contenir :
 
-Structure recommandée :
-
-```markdown
-# Architecture système
-
-## Objectifs architecturaux
-
-Exemples :
-- maintenabilité ;
-- simplicité ;
-- scalabilité ;
-- résilience ;
-- portabilité ;
-- observabilité.
-
-## Vue globale
-
-Décrire les grands composants du système.
+- objectifs architecturaux : maintenabilité, simplicité, scalabilité, résilience, portabilité, observabilité ;
+- vue globale des composants ;
+- responsabilités des couches ;
+- frontières importantes ;
+- flux structurants ;
+- dépendances externes critiques ;
+- contraintes techniques majeures ;
+- références vers les ADR concernées.
 
 Exemple conceptuel :
 
+```text
 Client
-  -> API / application
-  -> services métier
-  -> persistence
-  -> systèmes externes
-
-## Responsabilités des couches
-
-Décrire où doivent vivre :
-- présentation ;
-- logique métier ;
-- orchestration ;
-- accès aux données ;
-- intégrations ;
-- traitements asynchrones.
-
-## Frontières importantes
-
-Exemples :
-- l’UI ne contient pas de logique métier critique ;
-- la persistence n’est pas appelée directement depuis toutes les couches ;
-- les intégrations externes sont isolées ;
-- les règles métier importantes restent testables indépendamment du framework.
-
-## Flux structurants
-
-Documenter uniquement les flux importants :
-- authentification ;
-- création d’une transaction ;
-- traitement asynchrone ;
-- import ;
-- génération d’un rapport.
-
-## Dépendances externes critiques
-
-Lister les catégories :
-- base de données ;
-- stockage ;
-- identité ;
-- messaging ;
-- paiement ;
-- services tiers.
-
-Éviter d’y dupliquer la configuration détaillée.
-
-## Contraintes techniques majeures
-
-Exemples :
-- mono-tenant ou multi-tenant ;
-- traitement synchrone ou asynchrone ;
-- cohérence transactionnelle ;
-- contraintes de volumétrie ;
-- disponibilité cible.
-
-## Décisions structurantes
-
-Pointer vers les ADR concernées.
+  ↓
+API / application
+  ↓
+services métier
+  ↓
+persistence
+  ↓
+systèmes externes
 ```
 
-Cette spec ne doit pas devenir un catalogue de classes, de fichiers ou de composants techniques.
+Éviter d’en faire un catalogue de classes, de fichiers ou de composants techniques.
 
----
-
-## 3.2 Spec de sécurité
+### 3.2 Spec de sécurité
 
 Fichier recommandé :
 
@@ -352,81 +266,29 @@ specs/security/security-model.md
 
 Elle décrit le **modèle de sécurité du produit**, indépendamment d’un fournisseur d’identité ou d’un framework particulier.
 
-Structure recommandée :
+Elle peut couvrir :
 
-```markdown
-# Modèle de sécurité
-
-## Périmètre
-
-## Types d’utilisateurs
-
-## Authentification
-
-Décrire les principes :
-- identité vérifiée ;
+- types d’utilisateurs ;
+- authentification ;
 - gestion des sessions ;
 - MFA si nécessaire ;
-- récupération de compte.
-
-## Autorisation
-
-Décrire le modèle :
-- rôles ;
-- permissions ;
+- récupération de compte ;
+- rôles et permissions ;
 - ownership ;
 - séparation par organisation / tenant / workspace ;
-- politiques particulières.
-
-## Données sensibles
-
-Identifier :
-- PII ;
-- secrets ;
-- données financières ;
-- données réglementées ;
-- fichiers sensibles.
-
-## Contrôles essentiels
-
-Exemples :
-- contrôle serveur obligatoire ;
+- données sensibles ;
+- contrôles serveur ;
 - validation des entrées ;
-- protection contre l’accès horizontal ;
+- protection contre les accès horizontaux ;
 - principe du moindre privilège ;
-- filtrage des exports ;
-- protection des logs ;
-- gestion des secrets.
+- auditabilité ;
+- gestion des secrets ;
+- risques principaux ;
+- critères de validation sécurité.
 
-## Auditabilité
+Une feature qui modifie le modèle de confiance, les rôles ou l’isolation doit mettre à jour cette spec et, si nécessaire, produire une ADR.
 
-Décrire ce qui doit être traçable :
-- connexions ;
-- changements sensibles ;
-- modifications de permissions ;
-- imports / exports ;
-- actions administratives.
-
-## Gestion des secrets
-
-Définir les principes :
-- aucun secret dans Git ;
-- variables d’environnement ou secret manager ;
-- rotation ;
-- séparation par environnement.
-
-## Risques principaux
-
-Lister les risques propres au produit.
-
-## Critères de validation sécurité
-```
-
-Une feature qui modifie le modèle de confiance, les rôles ou l’isolation doit mettre à jour cette spec et éventuellement produire une ADR.
-
----
-
-## 3.3 Spec du modèle de données
+### 3.3 Spec du modèle de données
 
 Fichier recommandé :
 
@@ -435,64 +297,6 @@ specs/data-model/domain-model.md
 ```
 
 Cette spec est volontairement **indépendante de Prisma, Hibernate, Entity Framework, SQLAlchemy, Django ORM ou de tout autre outil**.
-
-Elle représente le modèle de référence dont l’implémentation physique devra s’inspirer.
-
-Exemple :
-
-```markdown
-# Modèle de données
-
-## Principes
-
-- identifier les entités métier ;
-- décrire leurs relations ;
-- définir les invariants importants ;
-- éviter les détails propres à un ORM.
-
-## Entités
-
-### User
-
-Responsabilité :
-Représente un utilisateur du système.
-
-Attributs principaux :
-- id
-- email
-- displayName
-- status
-- createdAt
-
-Relations :
-- appartient éventuellement à une ou plusieurs organisations.
-
-Contraintes :
-- email unique dans le périmètre défini par le produit.
-
-### Organization
-
-Responsabilité :
-Représente un espace métier isolé.
-
-Attributs principaux :
-- id
-- name
-- status
-
-Relations :
-- contient des utilisateurs ;
-- contient des ressources métier.
-```
-
-La spec peut également contenir un diagramme Mermaid :
-
-```mermaid
-erDiagram
-    USER ||--o{ MEMBERSHIP : has
-    ORGANIZATION ||--o{ MEMBERSHIP : contains
-    ORGANIZATION ||--o{ RESOURCE : owns
-```
 
 Pour chaque entité importante, documenter au minimum :
 
@@ -506,6 +310,15 @@ Pour chaque entité importante, documenter au minimum :
 - règles de suppression ;
 - données sensibles éventuelles.
 
+La spec peut contenir un diagramme Mermaid :
+
+```mermaid
+erDiagram
+    USER ||--o{ MEMBERSHIP : has
+    ORGANIZATION ||--o{ MEMBERSHIP : contains
+    ORGANIZATION ||--o{ RESOURCE : owns
+```
+
 Éviter de figer inutilement :
 
 - type SQL précis ;
@@ -514,9 +327,7 @@ Pour chaque entité importante, documenter au minimum :
 - annotation framework ;
 - stratégie physique détaillée.
 
-Ces éléments appartiennent à l’implémentation ou aux migrations.
-
-La relation recommandée est donc :
+Relation recommandée :
 
 ```text
 specs/data-model/domain-model.md
@@ -532,7 +343,7 @@ Le modèle ORM doit **implémenter** la spec de données, pas devenir l’unique
 
 ---
 
-# 4. ADR : décisions structurantes
+## 4. ADR : décisions structurantes
 
 Les décisions qui ont un impact durable doivent être conservées dans :
 
@@ -554,23 +365,17 @@ Format simple :
 # ADR-003 — Isolation multi-tenant
 
 ## Contexte
-
 ## Décision
-
 ## Alternatives considérées
-
 ## Conséquences
-
 ## Date
 ```
 
-Créer une ADR uniquement lorsqu’une décision mérite réellement d’être conservée.
-
-Ne pas transformer chaque choix de code en ADR.
+Créer une ADR uniquement lorsqu’une décision mérite réellement d’être conservée. Ne pas transformer chaque choix de code en ADR.
 
 ---
 
-# 5. README
+## 5. README
 
 Le `README.md` s’adresse principalement à un humain qui découvre ou exécute le projet.
 
@@ -590,11 +395,9 @@ Il doit généralement contenir :
 
 ---
 
-# 6. Relation entre les fichiers
+## 6. Relation entre les fichiers
 
-## 6.1 Changement fonctionnel
-
-Quand le comportement métier change :
+### 6.1 Changement fonctionnel
 
 ```text
 spec module
@@ -610,78 +413,66 @@ README si impact utilisateur
 
 Créer ou modifier une ADR uniquement si une décision structurante apparaît.
 
----
+### 6.2 Changement de données
 
-## 6.2 Changement de données
-
-Quand une donnée persistante change :
+Lorsqu’une donnée persistante change :
 
 1. mettre à jour la spec fonctionnelle si nécessaire ;
 2. mettre à jour `specs/data-model/domain-model.md` si le modèle conceptuel change ;
 3. modifier le modèle ORM ou le schéma physique ;
 4. créer la migration si nécessaire ;
 5. adapter les services métier ;
-6. adapter les imports/exports ;
+6. adapter les imports / exports ;
 7. vérifier les tests et migrations.
 
----
+### 6.3 Changement d’architecture
 
-## 6.3 Changement d’architecture
-
-Quand une décision touche plusieurs modules :
+Lorsqu’une décision touche plusieurs modules :
 
 1. mettre à jour la spec d’architecture ;
 2. créer une ADR si la décision mérite d’être conservée ;
 3. identifier les modules impactés ;
 4. implémenter par incréments ;
-5. vérifier l’absence de dérive architecture/code.
+5. vérifier l’absence de dérive architecture / code.
 
----
+### 6.4 Changement de sécurité
 
-## 6.4 Changement de sécurité
-
-Quand une évolution touche :
-
-- authentification ;
-- autorisation ;
-- rôles ;
-- données sensibles ;
-- isolation ;
-- imports ;
-- exports ;
-- audit ;
-- secrets ;
-
-alors :
+Lorsqu’une évolution touche l’authentification, l’autorisation, les rôles, les données sensibles, l’isolation, les imports / exports, l’audit ou les secrets :
 
 1. mettre à jour la spec sécurité ;
 2. mettre à jour la spec fonctionnelle concernée ;
 3. créer une ADR si le modèle de confiance change ;
 4. ajouter ou adapter les tests sécurité ;
-5. revoir logs, erreurs et données temporaires.
+5. revoir les logs, erreurs et données temporaires.
 
 ---
 
-# 7. Workflow Git recommandé
-
-Un logiciel important doit évoluer par changements reviewables.
+## 7. Workflow Git recommandé
 
 Principe :
 
-> Une branche = une intention principale.
+> **Une branche = une intention principale.**
 
 Cycle typique :
 
 ```text
 main
-  -> feature/...
-      -> spec
-      -> implementation
-      -> tests
-      -> review
-      -> commit
-      -> PR
-      -> merge
+  ↓
+feature/...
+  ↓
+spec
+  ↓
+implementation
+  ↓
+tests
+  ↓
+review
+  ↓
+commit
+  ↓
+PR
+  ↓
+merge
 ```
 
 Étapes :
@@ -699,9 +490,9 @@ main
 
 ---
 
-# 8. Revue du diff
+## 8. Revue du diff
 
-Prompt générique utile :
+Prompt générique :
 
 ```text
 Review les changements non committés comme une Pull Request.
@@ -713,56 +504,42 @@ Priorise :
 - problèmes de modèle de données ;
 - risques sécurité ;
 - tests manquants ;
-- changement hors scope.
+- changements hors scope.
 
 Ne propose pas de refactor cosmétique non demandé.
 ```
 
 ---
 
-# 9. Travailler sur les tâches longues
+## 9. Travailler sur les tâches longues
 
-Le contexte conversationnel est temporaire.
-
-Pour une tâche longue, utiliser un fichier de reprise.
-
-Exemple :
+Le contexte conversationnel est temporaire. Pour une tâche longue ou interrompable, maintenir :
 
 ```text
 TASK_STATE.md
 ```
 
-Structure :
+Structure recommandée :
 
 ```markdown
 # Task State
 
 ## Objectif
-
 ## Terminé
-
 ## En cours
-
 ## À faire
-
 ## Décisions prises
-
 ## Fichiers importants
-
 ## Validations effectuées
-
 ## Risques / blocages
-
 ## Prochaine étape
 ```
 
-Codex doit mettre ce fichier à jour régulièrement pour les tâches longues ou interrompables.
-
-Ce fichier peut être supprimé à la fin si sa conservation n’a plus de valeur.
+Codex doit mettre ce fichier à jour régulièrement. Il peut être supprimé à la fin si sa conservation n’a plus de valeur.
 
 ---
 
-# 10. Reprendre après une interruption
+## 10. Reprendre après une interruption
 
 Prompt recommandé :
 
@@ -778,17 +555,16 @@ Avant de poursuivre, reconstruis précisément l’état du travail à partir de
 5. l’historique encore disponible
 
 Identifie ce qui est déjà terminé et ce qui reste à faire.
-
 Ne refais pas les tâches terminées.
 
 Puis continue la tâche initiale jusqu’à son terme.
 ```
 
-La reprise doit s’appuyer en priorité sur l’état réel du dépôt.
+La reprise doit s’appuyer en priorité sur l’état réel du repository.
 
 ---
 
-# 11. Changer de thread sans perdre le contexte utile
+## 11. Changer de thread sans perdre le contexte utile
 
 Garder le même thread lorsque :
 
@@ -805,41 +581,14 @@ Créer un nouveau thread lorsque :
 - une revue indépendante est souhaitée ;
 - la feature précédente est terminée.
 
-Prompt de reprise propre :
-
-```text
-Nouveau thread pour [feature].
-
-Lis :
-- AGENTS.md ;
-- README.md ;
-- les specs concernées ;
-- TASK_STATE.md s’il existe ;
-- le diff courant si nécessaire.
-
-État actuel :
-[...]
-
-Objectif :
-[...]
-
-Contraintes :
-[...]
-
-Done when :
-[...]
-```
+Dans un nouveau thread, relire au minimum `AGENTS.md`, les specs concernées, `TASK_STATE.md` s’il existe et le diff courant si nécessaire.
 
 ---
 
-# 12. Handoff
+## 12. Handoff
 
-Avant de quitter une longue session :
+Avant de quitter une longue session, produire un handoff court contenant :
 
-```text
-Rédige un handoff court permettant de reprendre cette tâche dans un nouveau thread.
-
-Inclure :
 - objectif ;
 - état actuel ;
 - décisions prises ;
@@ -848,21 +597,14 @@ Inclure :
 - validations restantes ;
 - risques connus ;
 - prochaine étape.
-```
 
-Un handoff peut ensuite être placé dans :
-
-- `TASK_STATE.md` ;
-- une issue ;
-- une PR ;
-- une note temporaire ;
-- le prochain prompt.
+Ce handoff peut être conservé dans `TASK_STATE.md`, une issue, une PR, une note temporaire ou le prochain prompt.
 
 ---
 
-# 13. Prompts réutilisables
+## 13. Prompts réutilisables
 
-## 13.1 Cadrer une feature
+### 13.1 Cadrer une feature
 
 ```text
 Lis AGENTS.md, README.md et les specs existantes.
@@ -871,19 +613,16 @@ Je veux ajouter :
 [description]
 
 Avant l’implémentation :
-
 - identifie les specs concernées ;
 - clarifie les règles métier ;
 - identifie les impacts architecture, données et sécurité ;
 - propose les critères d’acceptation ;
 - liste les fichiers probablement concernés.
 
-Ne crée pas de complexité qui n’est pas nécessaire au besoin.
+Ne crée pas de complexité inutile.
 ```
 
----
-
-## 13.2 Implémenter depuis une spec
+### 13.2 Implémenter depuis une spec
 
 ```text
 Lis AGENTS.md et les specs concernées.
@@ -898,13 +637,10 @@ Contraintes :
 - préserver les comportements existants non concernés.
 
 Mets à jour les specs et README si nécessaire.
-
 Termine par les validations définies dans AGENTS.md.
 ```
 
----
-
-## 13.3 Debugger
+### 13.3 Debugger
 
 ```text
 Bug :
@@ -920,17 +656,12 @@ Observé :
 [...]
 
 Identifie la cause racine avant de modifier le code.
-
 Implémente ensuite le correctif minimal.
-
 Si le bug révèle une ambiguïté de spec, mets la documentation correspondante à jour.
-
 Exécute les validations pertinentes.
 ```
 
----
-
-## 13.4 Refactoriser
+### 13.4 Refactoriser
 
 ```text
 Je veux refactoriser [zone] pour [objectif].
@@ -945,9 +676,7 @@ Contraintes :
 Commence par cartographier les dépendances et les risques.
 ```
 
----
-
-## 13.5 Revue architecture
+### 13.5 Revue architecture
 
 ```text
 Review l’architecture de cette implémentation.
@@ -969,9 +698,7 @@ Vérifie notamment :
 Priorise les risques réels.
 ```
 
----
-
-## 13.6 Revue sécurité
+### 13.6 Revue sécurité
 
 ```text
 Fais une revue sécurité de cette feature.
@@ -988,14 +715,12 @@ Cherche en priorité :
 - erreurs révélant des informations internes ;
 - imports non validés ;
 - exports trop permissifs ;
-- incohérence entre spec et implémentation.
+- incohérences entre spec et implémentation.
 
 Classe les findings par sévérité.
 ```
 
----
-
-## 13.7 Revue du modèle de données
+### 13.7 Revue du modèle de données
 
 ```text
 Review le changement de modèle de données.
@@ -1021,35 +746,27 @@ Ne propose pas d’optimisation physique sans besoin démontré.
 
 ---
 
-# 14. Plan avant tâche complexe
+## 14. Plan avant tâche complexe
 
-Pour une migration, une refonte importante ou un changement à risque :
+Pour une migration, une refonte importante ou un changement à risque, demander un plan avant l’implémentation.
 
-```text
-Passe en mode plan.
+Le plan doit préciser :
 
-Lis les instructions, specs et fichiers pertinents.
-
-Avant toute modification :
-
-- résume le besoin ;
-- identifie les specs impactées ;
-- identifie les impacts architecture, sécurité et données ;
-- liste les fichiers probablement concernés ;
-- propose un plan en 5 à 8 étapes ;
-- indique les principaux risques ;
-- précise les validations finales.
-
-N’implémente rien avant validation du plan.
-```
+- le besoin ;
+- les specs impactées ;
+- les impacts architecture, sécurité et données ;
+- les fichiers probablement concernés ;
+- 5 à 8 étapes d’exécution ;
+- les principaux risques ;
+- les validations finales.
 
 Pour une correction locale simple, un plan formel est inutile.
 
 ---
 
-# 15. Développement incrémental
+## 15. Développement incrémental
 
-Éviter de demander à Codex de modifier simultanément de grandes parties indépendantes du système.
+Éviter de modifier simultanément de grandes parties indépendantes du système.
 
 Préférer :
 
@@ -1071,7 +788,7 @@ Chaque incrément doit être suffisamment petit pour être compris et revu.
 
 ---
 
-# 16. Sécurité des secrets
+## 16. Sécurité des secrets
 
 Ne jamais versionner :
 
@@ -1090,36 +807,33 @@ Utiliser selon l’environnement :
 - vault ;
 - credentials temporaires.
 
-Le dépôt peut contenir les **noms** des variables requises, mais pas leurs valeurs réelles.
+Le repository peut contenir les **noms** des variables requises, mais pas leurs valeurs réelles.
 
 ---
 
-# 17. Données de démonstration et données réelles
+## 17. Données de démonstration et données réelles
 
 Séparer clairement :
 
 ```text
 données de démonstration
-≠
-données de développement
-≠
-données de test
-≠
-données de production
+≠ données de développement
+≠ données de test
+≠ données de production
 ```
 
 Éviter que :
 
 - les seeds deviennent une source de vérité métier ;
 - les tests dépendent de données réelles ;
-- des exports production soient committés ;
+- des exports de production soient committés ;
 - les exemples contiennent des données personnelles.
 
 ---
 
-# 18. Architecture : principes génériques
+## 18. Architecture : principes génériques
 
-Quel que soit le framework, chercher à conserver des frontières claires entre :
+Chercher à conserver des frontières claires entre :
 
 ```text
 présentation
@@ -1130,9 +844,7 @@ intégrations externes
 infrastructure
 ```
 
-Ce découpage n’implique pas nécessairement six dossiers différents.
-
-Le principe important est que les responsabilités restent compréhensibles et testables.
+Ce découpage n’implique pas nécessairement six dossiers différents. Le principe important est que les responsabilités restent compréhensibles et testables.
 
 Exemple de flux :
 
@@ -1146,42 +858,27 @@ domain logic
 repository / persistence
 ```
 
-Pour une architecture plus simple, plusieurs couches peuvent être fusionnées.
-
-Ne pas introduire de complexité architecturale sans justification.
+Pour une architecture simple, plusieurs couches peuvent être fusionnées. Ne pas introduire de complexité architecturale sans justification.
 
 ---
 
-# 19. Modèle de données : source conceptuelle vs implémentation
+## 19. Modèle de données : conceptuel vs implémentation
 
-Le modèle conceptuel décrit le métier.
-
-L’ORM ou le schéma physique décrit son implémentation.
-
-Exemples d’implémentations possibles :
+Le modèle conceptuel décrit le métier. L’ORM ou le schéma physique décrit son implémentation.
 
 ```text
 specs/data-model/domain-model.md
         ↓
-Prisma
-Hibernate
-Entity Framework
-SQLAlchemy
-Django ORM
-Drizzle
-TypeORM
-SQL natif
-MongoDB schema
-autre
+Prisma / Hibernate / Entity Framework
+SQLAlchemy / Django ORM / Drizzle / TypeORM
+SQL natif / MongoDB schema / autre
 ```
 
-La spec ne doit donc pas contenir d’hypothèse inutile propre à l’outil choisi.
-
-Lorsqu’un ORM change, le modèle métier doit rester compréhensible.
+La spec ne doit pas contenir d’hypothèse inutile propre à l’outil choisi. Lorsqu’un ORM change, le modèle métier doit rester compréhensible.
 
 ---
 
-# 20. Déploiement
+## 20. Déploiement
 
 Le déploiement doit être traité comme une opération contrôlée.
 
@@ -1202,27 +899,11 @@ Avant une mise en production, vérifier au minimum :
 - changements d’infrastructure ;
 - impacts utilisateurs.
 
-Prompt :
-
-```text
-Prépare le plan de déploiement de cette version.
-
-Produis :
-- prérequis ;
-- configuration ;
-- migrations ;
-- commandes nécessaires ;
-- vérifications avant déploiement ;
-- vérifications après déploiement ;
-- rollback ;
-- risques.
-
-Ne lance aucune action destructive sans validation explicite.
-```
+Ne lancer aucune action destructive sans validation explicite.
 
 ---
 
-# 21. Definition of Done standard
+## 21. Definition of Done standard
 
 Pour une feature significative, le travail est terminé lorsque :
 
@@ -1244,7 +925,7 @@ Pour une feature significative, le travail est terminé lorsque :
 
 ---
 
-# 22. Anti-patterns
+## 22. Anti-patterns
 
 Éviter :
 
@@ -1265,13 +946,11 @@ Pour une feature significative, le travail est terminé lorsque :
 - accepter un diff sans revue ;
 - créer des abstractions prématurées ;
 - sur-architecturer un besoin simple ;
-- conserver un thread devenu confus alors que le dépôt permet de repartir proprement.
+- conserver un thread devenu confus alors que le repository permet de repartir proprement.
 
 ---
 
-# 23. Structure de référence recommandée
-
-Structure générique :
+## 23. Structure de référence recommandée
 
 ```text
 AGENTS.md
@@ -1310,7 +989,7 @@ scripts/
 
 Cette structure est une **référence**, pas une obligation.
 
-Un petit projet peut utiliser :
+Pour un petit projet :
 
 ```text
 specs/
@@ -1324,7 +1003,7 @@ L’objectif est la clarté, pas le nombre de fichiers.
 
 ---
 
-# 24. Cadence recommandée pour un produit long
+## 24. Cadence recommandée pour un produit long
 
 Cycle conseillé :
 
@@ -1344,14 +1023,14 @@ Après chaque friction récurrente, demander :
 
 > Est-ce qu’une nouvelle règle doit être ajoutée dans `AGENTS.md`, une spec, une ADR ou un prompt réutilisable ?
 
-Le dépôt devient ainsi progressivement meilleur pour les humains comme pour les agents.
+Le repository devient ainsi progressivement meilleur pour les humains comme pour les agents.
 
 ---
 
-# 25. Règle de décision : où documenter quoi ?
+## 25. Règle de décision : où documenter quoi ?
 
 | Information | Emplacement |
-|---|---|
+| --- | --- |
 | Règle permanente pour Codex | `AGENTS.md` |
 | Fonctionnalité métier | `specs/modules/` |
 | Architecture structurante | `specs/architecture/` |
@@ -1366,7 +1045,7 @@ Le dépôt devient ainsi progressivement meilleur pour les humains comme pour le
 
 ---
 
-# 26. Principe final
+## 26. Principe final
 
 Codex ne doit pas être utilisé comme une mémoire magique capable de reconstruire indéfiniment un logiciel depuis une conversation.
 
@@ -1388,7 +1067,7 @@ Git
 Review
 ```
 
-Codex intervient dans chacune de ces étapes, mais la source de vérité reste le dépôt.
+Codex intervient dans chacune de ces étapes, mais la source de vérité reste le repository.
 
 La meilleure utilisation de Codex sur un logiciel long consiste donc à construire progressivement un projet où :
 
@@ -1399,4 +1078,4 @@ La meilleure utilisation de Codex sur un logiciel long consiste donc à construi
 - les changements sont petits et vérifiables ;
 - Git protège l’historique ;
 - les tests prouvent les comportements ;
-- une nouvelle conversation peut reprendre le travail en relisant le dépôt.
+- une nouvelle conversation peut reprendre le travail en relisant le repository.
