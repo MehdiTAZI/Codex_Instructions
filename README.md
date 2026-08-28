@@ -1,135 +1,134 @@
 # Codex Instructions
 
-Repository de référence pour **travailler efficacement avec Codex sur des projets logiciels**, en particulier lorsque le projet devient long, complexe ou doit pouvoir être repris après une interruption de contexte.
+A reference repository for **working effectively with Codex on software projects**, especially when a project becomes long-running, complex, or needs to survive context loss and interrupted sessions.
 
-L’objectif n’est pas de fournir des instructions propres à une stack particulière, mais une méthode **agnostique** applicable quel que soit le langage, le framework, l’ORM, la base de données, le cloud ou la CI/CD.
+The goal is not to prescribe a specific technology stack. The approach is deliberately **stack-agnostic** and can be adapted to any language, framework, database, ORM, cloud platform, CI/CD system, or deployment model.
 
-> **Principe central :** la conversation sert à travailler ; le repository sert à mémoriser, transmettre, vérifier et reprendre le travail.
-
----
-
-## Contenu du repository
-
-| Fichier | Rôle |
-|---|---|
-| [`AGENTS.md`](./AGENTS.md) | Instructions permanentes destinées à Codex, notamment pour la reprise des tâches longues. |
-| [`prompt.md`](./prompt.md) | Prompts réutilisables pour démarrer, reprendre et organiser une tâche Codex. |
-| [`codex-large-software-guide-agnostic.md`](./codex-large-software-guide-agnostic.md) | Guide complet et agnostique pour développer et maintenir un logiciel avec Codex. |
-| `README.md` | Vue d’ensemble et point d’entrée du repository. |
+> **Core principle:** the conversation is where work happens; the repository is where durable context, decisions, specifications, verification, and recovery live.
 
 ---
 
-## 1. Philosophie générale
+## Repository contents
 
-Pour un projet logiciel important, la connaissance durable ne doit pas dépendre uniquement de l’historique d’une conversation.
+| File | Purpose |
+| --- | --- |
+| [`AGENTS.md`](./AGENTS.md) | Persistent instructions for Codex, including long-running task recovery rules. |
+| [`prompt.md`](./prompt.md) | Reusable prompts for starting, resuming, and organizing Codex work. |
+| [`codex-large-software-guide-agnostic.md`](./codex-large-software-guide-agnostic.md) | Detailed, stack-agnostic guide for building and maintaining software with Codex. |
+| `README.md` | Human-oriented overview and entry point to this repository. |
 
-Elle doit être versionnée dans le repository :
+---
+
+## 1. Operating model
+
+For a significant software project, durable knowledge should not exist only in a conversation history. It should be versioned in the repository.
 
 ```text
-Intentions humaines
-      ↓
-Specs
-      ↓
+Human intent
+    ↓
+Specifications
+    ↓
 Architecture / Security / Data Model
-      ↓
+    ↓
 Code
-      ↓
+    ↓
 Tests
-      ↓
+    ↓
 Git
-      ↓
+    ↓
 Review
 ```
 
-Codex peut intervenir à chaque étape, mais **le repository reste la source de vérité**.
+Codex can contribute at every stage, but **the repository remains the source of truth**.
 
-Les conséquences pratiques sont simples :
+In practice:
 
-- donner à Codex des tâches clairement bornées ;
-- conserver les règles permanentes dans `AGENTS.md` ;
-- documenter les comportements significatifs dans des specs ;
-- versionner les décisions structurantes ;
-- maintenir les tests et la documentation avec le code ;
-- vérifier systématiquement le diff et les validations du projet ;
-- utiliser `TASK_STATE.md` pour les travaux longs ou interrompables.
-
----
-
-## 2. Utilisation recommandée de `AGENTS.md`
-
-`AGENTS.md` constitue la couche d’instructions permanente d’un projet pour Codex.
-
-Il doit rester :
-
-- court ;
-- normatif ;
-- stable ;
-- actionnable.
-
-On peut y mettre notamment :
-
-- les commandes de build, test, lint et validation ;
-- les conventions obligatoires ;
-- les règles de sécurité ;
-- les contraintes architecturales importantes ;
-- les règles de documentation ;
-- le comportement attendu avant de terminer une tâche.
-
-Il ne doit pas devenir une documentation exhaustive du produit.
-
-Le `AGENTS.md` fourni dans ce repository ajoute surtout une règle importante pour les tâches longues : maintenir un fichier `TASK_STATE.md` permettant de reprendre le travail sans recommencer ce qui a déjà été réalisé.
+- give Codex bounded, explicit tasks;
+- keep persistent rules in `AGENTS.md`;
+- document significant behavior in specifications;
+- version important architectural decisions;
+- evolve tests and documentation together with the code;
+- review the diff and run project validations before considering work complete;
+- use `TASK_STATE.md` for long-running or interruptible tasks.
 
 ---
 
-## 3. Tâches longues et reprise après interruption
+## 2. `AGENTS.md`
 
-Pour une tâche susceptible de dépasser une session ou la fenêtre de contexte, Codex doit maintenir :
+`AGENTS.md` is the persistent instruction layer for Codex inside a repository.
+
+It should remain:
+
+- concise;
+- normative;
+- stable;
+- actionable.
+
+Typical content includes:
+
+- build, test, lint, and validation commands;
+- mandatory conventions;
+- important architectural constraints;
+- security rules;
+- documentation rules;
+- restrictions and safety constraints;
+- what Codex must verify before completing a task.
+
+It should **not** become an exhaustive product manual.
+
+The `AGENTS.md` in this repository focuses on one recurring operational problem: making long-running work recoverable through a maintained `TASK_STATE.md` file.
+
+---
+
+## 3. Long-running tasks and recovery
+
+For a task that may exceed one session or the available context window, maintain:
 
 ```text
 TASK_STATE.md
 ```
 
-Ce fichier doit contenir au minimum :
+A useful structure is:
 
 ```markdown
 # Task State
 
-## Objectif
+## Objective
 
-## Terminé
+## Completed
 
-## En cours
+## In Progress
 
-## À faire
+## Remaining
 
-## Décisions prises
+## Decisions
 
-## Fichiers modifiés / importants
+## Important / Modified Files
 
-## Validations effectuées
+## Validation Performed
 
-## Risques / problèmes connus
+## Known Issues / Risks
 
-## Prochaine étape
+## Next Action
 ```
 
-Lors d’une reprise, Codex doit reconstruire l’état réel du travail à partir de :
+When resuming an interrupted task, reconstruct the real state of the work from:
 
-1. `TASK_STATE.md` ;
-2. `git status` ;
-3. `git diff` ;
-4. les fichiers du repository ;
-5. l’historique de conversation encore disponible.
+1. `TASK_STATE.md`;
+2. `git status`;
+3. `git diff`;
+4. the repository files;
+5. any conversation context that is still available.
 
-Puis identifier ce qui est déjà terminé, ce qui reste à faire et **ne pas refaire les tâches terminées**.
+Then determine what is already complete, what remains, and **do not repeat completed work**.
 
-Les prompts prêts à l’emploi sont disponibles dans [`prompt.md`](./prompt.md).
+Copy-ready prompts are available in [`prompt.md`](./prompt.md).
 
 ---
 
-## 4. Organisation recommandée d’un projet piloté avec Codex
+## 4. Recommended project structure
 
-Pour un logiciel significatif, le guide recommande une structure conceptuelle de ce type :
+For a significant product, the guide recommends a conceptual structure such as:
 
 ```text
 AGENTS.md
@@ -145,187 +144,189 @@ specs/
 
 docs/
 
-src/ ou équivalent
+src/ or equivalent
 tests/
 scripts/
 ```
 
-Cette structure est une référence et non une obligation. Un petit projet peut utiliser beaucoup moins de fichiers.
+This is a reference structure, not a requirement. Smaller projects should use only the documentation they genuinely need.
 
-### Specs fonctionnelles
+### Functional specifications
 
-Les specs de modules décrivent **ce que le logiciel doit faire**, indépendamment de la technologie choisie :
+Module specifications describe **what the software must do**, independently of implementation technology.
 
-- objectif ;
-- acteurs ;
-- concepts métier ;
-- règles métier ;
-- données manipulées ;
-- parcours principaux ;
-- cas limites ;
-- permissions ;
-- critères d’acceptation.
+They typically cover:
 
-### Spec d’architecture
+- purpose;
+- actors;
+- domain concepts;
+- business rules;
+- data involved;
+- main flows;
+- edge cases;
+- permissions;
+- acceptance criteria.
 
-Fichier recommandé :
+### Architecture specification
+
+Recommended location:
 
 ```text
 specs/architecture/system-architecture.md
 ```
 
-Elle décrit uniquement les choix structurants : composants principaux, responsabilités des couches, frontières importantes, flux structurants, dépendances critiques et contraintes techniques majeures.
+It should capture only system-wide structural choices: major components, layer responsibilities, important boundaries, critical flows, external dependencies, and major technical constraints.
 
-### Spec de sécurité
+### Security specification
 
-Fichier recommandé :
+Recommended location:
 
 ```text
 specs/security/security-model.md
 ```
 
-Elle décrit notamment :
+It can describe:
 
-- authentification ;
-- autorisation ;
-- rôles et permissions ;
-- isolation des utilisateurs / tenants / workspaces ;
-- données sensibles ;
-- auditabilité ;
-- gestion des secrets ;
-- principaux risques et contrôles de sécurité.
+- authentication;
+- authorization;
+- roles and permissions;
+- tenant / organization / workspace isolation;
+- sensitive data;
+- auditability;
+- secret management;
+- key security risks and controls.
 
-### Spec du modèle de données
+### Data model specification
 
-Fichier recommandé :
+Recommended location:
 
 ```text
 specs/data-model/domain-model.md
 ```
 
-Cette spec décrit le **modèle métier conceptuel**, indépendamment de Prisma, Hibernate, Entity Framework, SQLAlchemy, Django ORM ou de toute autre implémentation.
-
-La relation recommandée est :
+This file describes the **conceptual domain model**, independently of Prisma, Hibernate, Entity Framework, SQLAlchemy, Django ORM, or any other persistence technology.
 
 ```text
 specs/data-model/domain-model.md
         ↓
-modèle ORM / schéma SQL / documents / collections
+ORM model / SQL schema / documents / collections
         ↓
 migrations
         ↓
-base réelle
+real database
 ```
 
-L’ORM implémente le modèle ; il ne doit pas devenir l’unique documentation du modèle métier.
+The ORM or physical schema implements the domain model; it should not be the only documentation of that model.
 
 ---
 
-## 5. Workflow recommandé avec Codex
+## 5. Recommended Codex workflow
 
-Pour une nouvelle feature :
+For a new feature:
 
 ```text
-Besoin
-  ↓
-Spec fonctionnelle
-  ↓
-Impacts architecture / sécurité / données
-  ↓
-Plan si nécessaire
-  ↓
-Implémentation incrémentale
-  ↓
-Tests et validations
-  ↓
-Review du diff
-  ↓
+Requirement
+    ↓
+Functional specification
+    ↓
+Architecture / Security / Data impact
+    ↓
+Plan when needed
+    ↓
+Incremental implementation
+    ↓
+Tests and validation
+    ↓
+Diff review
+    ↓
 Documentation
-  ↓
+    ↓
 Commit / PR
 ```
 
-Pour préparer une demande importante, [`prompt.md`](./prompt.md) propose également le workflow suivant :
+For larger tasks, [`prompt.md`](./prompt.md) also suggests preparing the work before moving into Codex:
 
-1. brainstormer dans ChatGPT ;
-2. générer le plan ;
-3. générer le prompt ;
-4. préparer les inputs nécessaires ;
-5. exécuter ensuite le travail dans Codex.
+1. brainstorm and clarify the requirement;
+2. generate or validate the implementation plan;
+3. prepare the final Codex prompt;
+4. gather the required inputs and references;
+5. execute the task in Codex.
 
-Une pratique proposée est de considérer :
+A useful organizational convention is:
 
-- **un projet Codex** pour un produit ;
-- **un nouveau chat/thread** pour une feature ou fonctionnalité distincte.
+- **one Codex project per product or repository context**;
+- **a separate thread for a distinct feature or workstream when isolation improves clarity**.
+
+This is a recommendation, not a Codex requirement.
 
 ---
 
 ## 6. Definition of Done
 
-Une feature significative n’est pas terminée lorsque le code est simplement écrit.
+A significant feature is not complete merely because code has been written.
 
-Selon le projet, il faut vérifier :
+Depending on the project, completion should include relevant checks such as:
 
-- conformité avec les specs ;
-- tests unitaires et d’intégration ;
-- tests end-to-end si pertinents ;
-- build / compilation ;
-- lint ;
-- validation des types ;
-- migrations ;
-- sécurité ;
-- parcours UI importants ;
-- cohérence architecture / code ;
-- absence de secrets ;
-- revue du `git diff` ;
-- absence de changements hors scope.
+- specifications are consistent with the implementation;
+- unit and integration tests pass;
+- end-to-end tests pass when relevant;
+- build / compilation succeeds;
+- linting succeeds;
+- type checking succeeds;
+- migrations are valid;
+- security implications have been reviewed;
+- important UI flows have been verified;
+- architecture and implementation remain aligned;
+- no secrets or unintended files were introduced;
+- `git diff` has been reviewed;
+- no unrelated changes were added.
 
-Les commandes concrètes propres au projet doivent être définies dans son `AGENTS.md`.
-
----
-
-## 7. Principaux anti-patterns
-
-Éviter notamment de :
-
-- considérer la mémoire conversationnelle de Codex comme la source de vérité ;
-- demander plusieurs features indépendantes dans une seule tâche ;
-- utiliser le schéma ORM comme seule documentation métier ;
-- transformer `README.md` en documentation architecturale exhaustive ;
-- transformer `AGENTS.md` en manuel de plusieurs dizaines de pages ;
-- hard-coder des données métier ;
-- lancer des refactors hors scope ;
-- ignorer les migrations, tests ou revues de diff ;
-- versionner des secrets ou des données de production sensibles ;
-- sur-architecturer un besoin simple ;
-- refaire du travail déjà terminé après une reprise de contexte.
+Project-specific commands should live in that project's `AGENTS.md`.
 
 ---
 
-## 8. Guide complet
+## 7. Common anti-patterns
 
-Pour les détails, patterns, prompts, workflows Git, ADR, revues architecture/sécurité/data-model, déploiement et exemples de structures, consulter :
+Avoid:
+
+- treating Codex conversation memory as the source of truth;
+- combining unrelated features in one large task;
+- using the ORM schema as the only domain documentation;
+- turning `README.md` into exhaustive architecture documentation;
+- turning `AGENTS.md` into a large handbook;
+- hard-coding business data without justification;
+- performing unrelated refactors while implementing a feature;
+- ignoring migrations, tests, or diff review;
+- committing secrets or sensitive production data;
+- over-engineering simple requirements;
+- redoing already completed work after a context interruption.
+
+---
+
+## 8. Detailed guide
+
+For the full methodology, examples, prompts, Git workflow, ADR guidance, architecture/security/data-model reviews, deployment practices, and reference structures, see:
 
 **[`codex-large-software-guide-agnostic.md`](./codex-large-software-guide-agnostic.md)**
 
-Le guide est volontairement plus complet et sert de **référence optionnelle**. Il n’a pas vocation à être relu intégralement par Codex à chaque tâche : les instructions permanentes doivent rester dans `AGENTS.md`, tandis que Codex doit surtout inspecter les specs, le code et les tests directement concernés.
+The guide is intentionally detailed and should be treated as **optional reference material**. Codex does not need to reread it for every task. Persistent rules belong in `AGENTS.md`, while task execution should focus primarily on the relevant specifications, code, tests, and current repository state.
 
 ---
 
-## 9. Résumé
+## 9. Where information should live
 
-Ce repository fournit une méthode pour rendre l’utilisation de Codex plus fiable sur des projets logiciels réels :
+| Information | Recommended location |
+| --- | --- |
+| Persistent Codex rule | `AGENTS.md` |
+| Functional behavior | `specs/modules/` |
+| System architecture | `specs/architecture/` |
+| Security model | `specs/security/` |
+| Conceptual / logical data model | `specs/data-model/` |
+| Durable architectural decision | `specs/decisions/` |
+| Installation and usage | `README.md` |
+| Operations / runbooks | `docs/` |
+| Reusable prompt | `specs/prompts/` or `prompt.md` |
+| Temporary long-task state | `TASK_STATE.md` |
+| Actual implementation | code + migrations + tests |
 
-```text
-Règles permanentes     → AGENTS.md
-Specs métier           → specs/modules/
-Architecture           → specs/architecture/
-Sécurité               → specs/security/
-Modèle de données      → specs/data-model/
-Décisions durables     → specs/decisions/
-Prompts réutilisables  → specs/prompts/ ou prompt.md
-État temporaire        → TASK_STATE.md
-Implémentation réelle  → code + migrations + tests
-```
-
-Le but final est qu’un humain ou un nouveau thread Codex puisse reprendre le projet en relisant le repository, sans dépendre d’une conversation précédente.
+The goal is to make the repository understandable and recoverable enough that a human or a new Codex thread can continue the work without depending on a previous conversation.
