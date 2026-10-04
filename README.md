@@ -15,7 +15,42 @@ The goal is not to prescribe a specific technology stack. The approach is delibe
 | [`AGENTS.md`](./AGENTS.md) | Persistent instructions for Codex, including the issue-driven context and recovery workflow. |
 | [`prompt.md`](./prompt.md) | Reusable prompts for starting, resuming, and organizing Codex work. |
 | [`codex-large-software-guide-agnostic.md`](./codex-large-software-guide-agnostic.md) | Detailed, stack-agnostic guide covering software delivery, issue/PR governance, validation/review, and Chat/Work/Codex model-reasoning routing. |
+| [`docs/images/`](./docs/images/) | Vector diagrams used as visual quick references throughout the documentation. |
 | `README.md` | Human-oriented overview and entry point to this repository. |
+
+---
+
+## Visual quick reference
+
+The documentation is deliberately usable as text, but the main decisions are also summarized visually.
+
+### Delivery workflow
+
+![Issue-driven workflow, merge gates and evidence levels](./docs/images/08-git-workflow-gates-evidence.svg)
+
+<details>
+<summary><strong>OpenAI model / reasoning / surface / orchestration in one view</strong></summary>
+
+![The four dimensions for choosing how to work](./docs/images/01-four-dimensions.svg)
+
+</details>
+
+<details>
+<summary><strong>Chat vs Work vs Codex</strong></summary>
+
+![When to use Chat, Work or Codex](./docs/images/02-chat-vs-work-vs-codex.svg)
+
+</details>
+
+### Start here
+
+| If you need to... | Start with |
+| --- | --- |
+| execute or resume a repository task | [Issue-driven task context](#3-issue-driven-task-context-and-recovery) |
+| understand the recommended delivery flow | [Recommended Codex workflow](#5-recommended-codex-workflow) |
+| choose Chat, Work, Codex, a model or reasoning level | [Detailed guide — sections 26–28](./codex-large-software-guide-agnostic.md#26-choisir-la-bonne-surface--chat-work-ou-codex) |
+| find copy-ready execution / recovery prompts | [`prompt.md`](./prompt.md) |
+| understand permanent agent rules | [`AGENTS.md`](./AGENTS.md) |
 
 ---
 
@@ -270,29 +305,11 @@ The ORM or physical schema implements the domain model; it should not be the onl
 
 ## 5. Recommended Codex workflow
 
-For a new feature:
+For a new feature, the default path is:
 
-```text
-Requirement
-    ↓
-Self-contained GitHub issue
-    ↓
-Functional specification
-    ↓
-Architecture / Security / Data impact
-    ↓
-Plan when needed
-    ↓
-Incremental implementation
-    ↓
-Tests and validation
-    ↓
-Diff review
-    ↓
-Documentation
-    ↓
-Commit / PR
-```
+> **Requirement → self-contained issue → branch → implementation → validation → PR → review → merge → issue closure**
+
+The complete flow, merge gates, and evidence levels are summarized in the [workflow diagram](./docs/images/08-git-workflow-gates-evidence.svg).
 
 For larger tasks, [`prompt.md`](./prompt.md) also suggests preparing the work before moving into Codex:
 
