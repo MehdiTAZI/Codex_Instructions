@@ -36,5 +36,5 @@
 
 <rect x="60" y="600" width="1080" height="90" rx="16" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
 <text x="90" y="636" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="800" fill="#0F172A">Repository / code at the center?</text>
-<text x="90" y="670" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#2563EB">Use Codex. Default: 6.1 Sol High → Max if needed → Astra when stakes rise → Ultra if genuinely parallelizable.</text>
+<text x="90" y="660" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#2563EB"><tspan x="90">Use Codex. Default: 6.1 Sol High → Max if needed → Astra when stakes rise</tspan><tspan x="90" dy="22">→ Ultra only if the task is genuinely parallelizable.</tspan></text>
 </svg>
