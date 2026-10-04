@@ -82,7 +82,7 @@ The `AGENTS.md` in this repository focuses on one recurring operational problem:
 
 ## 3. Issue-driven task context and recovery
 
-For any substantial task, create or enrich a **self-contained GitHub issue**. The issue is the durable source of truth for the task's **WHY, WHAT, constraints, and expected result**.
+For any substantial task, create or enrich a **self-contained GitHub issue**. Use **one issue per distinct task** and, before creating a new one, check for an equivalent issue to enrich instead of duplicating it. The issue is the durable source of truth for the task's **WHY, WHAT, constraints, and expected result**.
 
 A contributor or LLM with repository access should be able to understand and continue the task without needing the chat that created it.
 
@@ -108,7 +108,12 @@ A useful issue structure is:
 
 ## Dependencies
 - Depends on
-- Execution order / readiness when used by the project
+
+## Project metadata when used
+- Phase
+- Priority
+- Execution Order
+- Agent Ready
 
 ## Relevant files / specs / references
 
@@ -118,6 +123,8 @@ A useful issue structure is:
 ```
 
 The issue should capture **WHY / WHAT / constraints / result**. The implementation **HOW** remains with the contributor unless a specific technical or architectural choice is itself a requirement.
+
+`Execution Order` is not a dependency: it sequences ready work. `Depends on` identifies prerequisites that must be satisfied first. A GitHub Project may expose these fields for organization, but the issue body must still contain the context required to execute the task.
 
 The recommended lifecycle is:
 
