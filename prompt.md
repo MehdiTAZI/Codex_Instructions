@@ -1,103 +1,251 @@
-# Reusable Codex Prompts
+# Reusable AI Engineering with Codex Prompts
 
-## 1. Issue-Driven Task Context
+These prompts are templates. Adapt them to the repository and task instead of copying them mechanically.
 
-### Create or improve a self-contained issue
+---
+
+## 1. Create or improve a self-contained issue
 
 ```text
 Prepare or update the GitHub issue for this task so that another human or LLM can execute or resume it without access to this conversation.
 
-Use one issue per distinct task. Before creating a new issue, check for an equivalent existing issue and enrich it instead of creating a duplicate.
+Before creating a new issue, check whether an equivalent issue already exists. Enrich the existing one instead of duplicating it.
 
-The issue must contain, as relevant:
-
+Include, as relevant:
 - Objective
 - Context / problem
 - Expected behavior / outcome
 - Scope
 - Out of scope
 - Acceptance criteria
-- Architectural, security, and implementation constraints
+- Architecture / security / implementation constraints that are intentional
 - Dependencies / Depends on
-- Phase / Priority / Execution Order / Agent Ready when used by the project
-- Relevant files, specs, references, examples, or errors
+- Phase / Priority / Execution Order / Agent Ready when used
+- Relevant files, specs, references, examples, logs, or errors
 - Validation / tests
 - Definition of Done
 
 The issue is the source of truth for WHY, WHAT, constraints, and the expected result.
-Execution Order sequences ready work; Depends on represents actual prerequisites.
-Do not over-specify HOW unless a specific technical or architectural choice is required.
+Do not over-specify HOW unless a specific implementation or architecture choice is itself a requirement.
 Do not leave required context only in this conversation.
 ```
 
-### Start work from an issue
+---
+
+## 2. Start implementation from an issue
 
 ```text
 Work from this GitHub issue as the source of truth.
 
-Before implementation:
-1. read AGENTS.md and the relevant repository documentation/specs;
-2. read the complete issue and its dependencies;
-3. inspect the current Git state and relevant code;
-4. verify that the issue is self-contained enough to execute safely;
-5. for a complex or risky change, prepare a concise implementation plan before modifying code.
+Before modifying code:
+1. read the applicable AGENTS.md instructions;
+2. read the complete issue and dependencies;
+3. inspect the real repository and current Git state;
+4. read relevant specs / ADRs / tests;
+5. confirm that the issue is sufficiently self-contained;
+6. if the change is complex, risky, cross-layer, migration-heavy, or ambiguous, prepare a concise implementation plan first.
 
 Then:
-- create/use the task branch;
+- create or use the dedicated branch/worktree;
 - implement only the required scope;
-- run the relevant tests and validations;
-- review the diff;
-- create/update the Pull Request linked to the issue.
+- preserve existing invariants;
+- avoid unrelated refactors;
+- run the relevant build/lint/type/test/integration/security checks;
+- review the final diff;
+- update documentation/specs when behavior or architecture changed;
+- create/update the PR linked to the issue.
 
-The PR must explain what changed, the implementation approach, relevant impacts, tests/validations, documentation changes, and known limitations.
-Do not close the issue until the change is merged and the acceptance criteria / Definition of Done are satisfied.
+The PR must describe the implementation HOW, impacts, tests/evidence, docs, limitations, and follow-up.
+Do not close the issue until merge and satisfaction of acceptance criteria / Definition of Done.
 ```
 
-### Resume after an interruption or context loss
+---
+
+## 3. Plan a complex or risky change
 
 ```text
-Continue work on the GitHub issue.
+Before implementation, inspect the repository and prepare a plan.
 
-Before proceeding, reconstruct the actual state from:
-1. the issue body and relevant issue comments;
+Include:
+- objective and current-state understanding;
+- affected components/files;
+- invariants that must remain true;
+- architecture/data/security implications;
+- dependencies;
+- migration and rollback concerns;
+- implementation increments;
+- validation strategy;
+- main risks and unknowns.
+
+Do not invent repository structure that does not exist.
+Flag uncertainty explicitly.
+Keep unrelated refactors out of scope.
+
+Stop after the plan if human review/approval is required for this change.
+```
+
+---
+
+## 4. Review a diff or Pull Request
+
+```text
+Review this change as an engineering Pull Request.
+
+Prioritize:
+1. correctness / bugs / regressions;
+2. security / authorization / isolation;
+3. spec / ADR / invariant alignment;
+4. data model / migrations;
+5. missing or weak tests;
+6. evidence quality;
+7. operability / rollback / observability;
+8. maintainability;
+9. style only after substantive issues.
+
+Check for:
+- scope creep;
+- stale assumptions;
+- integration gaps;
+- missing E2E validation for cross-system changes;
+- claims that exceed the actual evidence;
+- dependency or migration hazards.
+
+Do not manufacture cosmetic findings to increase comment count.
+For risky changes, review from fresh context instead of relying on the implementation conversation.
+```
+
+---
+
+## 5. Resume after interruption or context loss
+
+```text
+Continue work on this GitHub issue.
+
+Reconstruct the actual state from:
+1. the issue body and relevant comments;
 2. linked Pull Requests and reviews;
 3. git status;
 4. git diff;
 5. relevant repository files, specs, tests, and Git history.
 
-Identify what is already complete and what remains.
+Identify:
+- what is already complete;
+- what remains;
+- unresolved acceptance criteria;
+- blockers / dependencies;
+- validation already performed and still required.
+
 Do not redo completed work.
 
-If the issue is missing context required for safe continuation, update the issue first so it becomes self-contained again.
-
-Then continue through validation, PR/review, merge, and issue closure according to the repository workflow.
+If durable context is missing, update the issue or repository documentation before continuing.
+Do not create TASK_STATE.md unless this repository explicitly requires it.
 ```
-
-### Deprecated: Long-Running Tasks / TASK_STATE.md
-
-The older workflow based on maintaining `TASK_STATE.md` for long-running tasks is **deprecated**.
-
-Do not create or maintain `TASK_STATE.md` by default. Use a self-contained GitHub issue plus the linked PR and repository/Git state for durable context and recovery.
-
-Only use a task-state file when a specific repository or workflow explicitly requires it.
 
 ---
 
-## 2. Prompt Preparation Workflow
+## 6. Select surface, model, reasoning, and orchestration
 
-For larger or more expensive Codex tasks, prepare the work before execution:
+```text
+Recommend the lightest configuration that should reliably satisfy this task.
 
-1. Brainstorm and clarify the requirement in ChatGPT.
-2. Generate or validate the implementation plan.
-3. Create or enrich the self-contained GitHub issue.
-4. Prepare the required inputs, references, examples, or specifications.
-5. Execute the issue in Codex.
-6. Validate, review, and open/update the linked PR.
+Decide separately:
+1. Surface: Chat, Work, or Codex
+2. Model: Luna, GPT-6.1 Sol, Astra, or another justified option
+3. Reasoning: Low / Medium / High / XHigh / Max
+4. Orchestration: single-agent or multi-agent
 
-### Suggested organization
+Consider:
+- whether a repository is central;
+- ambiguity;
+- technical complexity;
+- blast radius;
+- security/architecture importance;
+- omission cost;
+- task volume;
+- whether workstreams are genuinely independent;
+- coordination overhead;
+- latency/cost sensitivity.
 
-- Use one Codex project for each product or repository context.
-- Use a separate chat/thread for a distinct feature or workstream when isolation improves clarity.
-- Treat the GitHub issue and repository as durable context; conversations are temporary working context.
+Default for serious repo work: Codex + GPT-6.1 Sol High.
+Escalate to Max if the problem remains difficult.
+Escalate to Astra when stakes/ambiguity justify the quality increase.
+Use Ultra only when independent workstreams genuinely benefit from parallel agents.
 
-These are organizational recommendations, not hard Codex requirements.
+Explain the trade-off briefly.
+Treat model availability/pricing as a dated snapshot and verify current product documentation if the decision depends on it.
+```
+
+---
+
+## 7. Run a high-stakes audit
+
+```text
+Audit the available code, configuration, documentation, tests, and architecture as independent evidence.
+
+Use distinct passes:
+1. detailed local consistency pass;
+2. architecture/security challenge;
+3. cross-cutting omission/contradiction pass when parallel workstreams are useful.
+
+Look for:
+- contradictions inside the same document/codebase;
+- document vs implementation mismatches;
+- missing structural controls;
+- unsafe defaults;
+- security / permission / secret risks;
+- data-quality and migration risks;
+- missing observability / rollback / DR;
+- CI/CD gaps;
+- untested assumptions;
+- claims unsupported by real evidence.
+
+Distinguish:
+- static review;
+- local validation;
+- dry-run/plan;
+- integration;
+- real deployment;
+- operational proof.
+
+Do not claim production validation without production-grade evidence.
+```
+
+---
+
+## 8. Prepare a feature prompt
+
+```text
+Write the task contract using:
+
+Goal
+Context
+Constraints
+Done when
+
+Reference the issue/specs/repository artifacts that contain durable context.
+State important rationale and invariants.
+Avoid prescribing hidden reasoning steps.
+Avoid unrelated changes.
+Make acceptance criteria machine-verifiable where possible.
+```
+
+---
+
+## 9. Context reset / fresh-thread handoff
+
+```text
+Prepare the durable context needed for a fresh agent/thread to continue safely.
+
+Do not summarize the whole conversation.
+Instead ensure the repository/issue/PR contains:
+- objective and scope;
+- decisions and rationale;
+- current implementation state;
+- relevant files/specs;
+- completed validation;
+- remaining work;
+- risks/blockers;
+- next action.
+
+Then the new context should start by reading those durable artifacts and the current Git state.
+```
