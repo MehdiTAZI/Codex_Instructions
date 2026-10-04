@@ -7,6 +7,8 @@
 ```text
 Prepare or update the GitHub issue for this task so that another human or LLM can execute or resume it without access to this conversation.
 
+Use one issue per distinct task. Before creating a new issue, check for an equivalent existing issue and enrich it instead of creating a duplicate.
+
 The issue must contain, as relevant:
 
 - Objective
@@ -16,13 +18,14 @@ The issue must contain, as relevant:
 - Out of scope
 - Acceptance criteria
 - Architectural, security, and implementation constraints
-- Dependencies
-- Execution order / readiness metadata when used by the project
+- Dependencies / Depends on
+- Phase / Priority / Execution Order / Agent Ready when used by the project
 - Relevant files, specs, references, examples, or errors
 - Validation / tests
 - Definition of Done
 
 The issue is the source of truth for WHY, WHAT, constraints, and the expected result.
+Execution Order sequences ready work; Depends on represents actual prerequisites.
 Do not over-specify HOW unless a specific technical or architectural choice is required.
 Do not leave required context only in this conversation.
 ```
