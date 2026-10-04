@@ -455,6 +455,8 @@ Principe :
 
 Pour toute tâche significative, l’issue GitHub est la source de vérité du **WHY / WHAT / contraintes / résultat attendu**. Elle doit être compréhensible et exécutable par un humain ou un LLM qui n’a pas accès à la conversation d’origine.
 
+Utiliser **une issue par tâche distincte**. Avant d’en créer une nouvelle, rechercher une issue équivalente et l’enrichir plutôt que créer un doublon.
+
 Cycle typique :
 
 ```text
@@ -482,19 +484,22 @@ fermeture de l’issue
 Étapes :
 
 1. créer ou enrichir l’issue avec le contexte complet, le périmètre, les critères d’acceptation, les dépendances et la Definition of Done ;
-2. vérifier les dépendances, l’ordre d’exécution et la readiness lorsque le projet utilise ces métadonnées ;
-3. créer une branche courte liée à l’intention de l’issue ;
-4. lire les instructions, specs et fichiers concernés ;
-5. préparer un plan avant modification lorsque la tâche est complexe ou risquée ;
-6. mettre à jour les specs nécessaires ;
-7. implémenter la tranche minimale ;
-8. exécuter les validations ;
-9. revoir le diff ;
-10. créer ou mettre à jour la PR en la liant à l’issue ;
-11. faire reviewer puis merger ;
-12. fermer l’issue uniquement lorsque les critères d’acceptation et la Definition of Done sont satisfaits.
+2. renseigner lorsque le projet les utilise : `Phase`, `Priority`, `Execution Order`, `Agent Ready` et `Depends on` ;
+3. vérifier les dépendances, l’ordre d’exécution et la readiness ;
+4. créer une branche courte liée à l’intention de l’issue ;
+5. lire les instructions, specs et fichiers concernés ;
+6. préparer un plan avant modification lorsque la tâche est complexe ou risquée ;
+7. mettre à jour les specs nécessaires ;
+8. implémenter la tranche minimale ;
+9. exécuter les validations ;
+10. revoir le diff ;
+11. créer ou mettre à jour la PR en la liant à l’issue ;
+12. faire reviewer puis merger ;
+13. fermer l’issue uniquement lorsque les critères d’acceptation et la Definition of Done sont satisfaits.
 
 La PR documente le **HOW** : changements réalisés, approche d’implémentation, impacts architecture / sécurité / données lorsqu’ils existent, tests, documentation et limites connues.
+
+`Execution Order` et `Depends on` sont différents : le premier sert à séquencer le travail prêt à être exécuté ; le second exprime de vraies dépendances qui doivent être satisfaites au préalable.
 
 Le Project GitHub, lorsqu’il est utilisé, sert principalement à l’organisation, la priorité, l’ordre d’exécution, la readiness et le statut. Le contexte nécessaire à l’exécution doit rester dans l’issue et le repository.
 
@@ -525,7 +530,7 @@ Ne propose pas de refactor cosmétique non demandé.
 
 Le contexte conversationnel est temporaire. Pour toute tâche significative, maintenir le contexte durable dans une **issue GitHub auto-porteuse**.
 
-Une issue doit permettre à un nouvel agent de comprendre et poursuivre le travail sans relire les conversations précédentes.
+Une issue doit permettre à un nouvel agent de comprendre et poursuivre le travail sans relire les conversations précédentes. Utiliser une issue par tâche distincte et enrichir une issue équivalente existante plutôt que la dupliquer.
 
 Structure recommandée :
 
@@ -537,8 +542,8 @@ Structure recommandée :
 ## Hors périmètre
 ## Critères d’acceptation
 ## Contraintes
-## Dépendances
-## Ordre d’exécution / Agent Ready si utilisé
+## Dépendances / Depends on
+## Phase / Priority / Execution Order / Agent Ready si utilisés
 ## Fichiers / specs / références utiles
 ## Validation / tests
 ## Definition of Done
