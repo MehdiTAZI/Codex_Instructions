@@ -70,6 +70,8 @@ Do not solve every problem by selecting the biggest model at the highest reasoni
 
 ## Visual quick reference
 
+All key visuals are shown directly. The diagrams are designed as quick-reference summaries; the handbook remains the normative text.
+
 ### Choose the environment
 
 ![Chat vs Work vs Codex](./docs/images/02-chat-vs-work-vs-codex.svg)
@@ -78,35 +80,27 @@ Do not solve every problem by selecting the biggest model at the highest reasoni
 
 ![Model selection](./docs/images/03-model-selection.svg)
 
-<details>
-<summary><strong>Reasoning levels</strong></summary>
+### Choose the reasoning level
 
 ![Reasoning levels](./docs/images/04-reasoning-levels.svg)
 
-</details>
-
-<details>
-<summary><strong>Max vs Ultra</strong></summary>
+### Max vs Ultra
 
 ![Max vs Ultra](./docs/images/05-max-vs-ultra.svg)
 
-</details>
-
-<details>
-<summary><strong>Coding playbook</strong></summary>
+### Coding playbook
 
 ![Coding playbook](./docs/images/06-coding-playbook.svg)
 
-</details>
-
-<details>
-<summary><strong>Data/AI, cloud, architecture, and audit routing</strong></summary>
+### Data/AI, cloud, architecture, and audit routing
 
 ![Data AI cloud audit routing](./docs/images/07-data-ai-cloud-audit-routing.svg)
 
-</details>
+### Long-running Git workflow
 
-### Delivery workflow and evidence
+![Long-running Git workflow](./docs/images/10-long-running-git-workflow.svg)
+
+### Merge gates and evidence
 
 ![Git workflow, merge gates, and evidence levels](./docs/images/08-git-workflow-gates-evidence.svg)
 
@@ -169,6 +163,120 @@ Recommended lifecycle:
 > **Issue → branch/worktree → implementation → validation → PR → review → merge → issue closure**
 
 The previous default based on `TASK_STATE.md` is **deprecated**. Resume from the issue, linked PR/reviews, Git state, repository files, specs, and tests.
+
+---
+
+## How to use Git/GitHub for long-running work
+
+For long-running or interruptible work, **GitHub is the durable memory**. Do not depend on the conversation to preserve task state.
+
+The operating model is:
+
+> **Self-contained issue → dedicated branch/worktree → incremental commits → linked PR → review/validation → merge → issue closure**
+
+### 1. Start with one self-contained issue
+
+Use one issue per distinct task. The issue should be executable by a fresh human or agent without the original chat.
+
+At minimum, capture:
+- objective and context;
+- expected outcome;
+- scope / out of scope;
+- acceptance criteria;
+- intentional architecture/security constraints;
+- dependencies;
+- relevant files/specs/references;
+- validation/tests;
+- Definition of Done.
+
+The issue owns **WHY / WHAT / constraints / expected result**.
+
+If your project uses them:
+- `Agent Ready = Yes` means the issue is sufficiently specified to start;
+- `Depends on` identifies real prerequisites;
+- `Execution Order` sequences work that is already ready.
+
+### 2. Create one primary branch intention
+
+Do not do significant work directly on `main`.
+
+Example:
+
+```bash
+git switch main
+git pull
+git switch -c codex/123-add-audit-control
+```
+
+For parallel independent work, use separate branches or worktrees:
+
+```bash
+git worktree add ../repo-issue-123 -b codex/123-add-audit-control main
+git worktree add ../repo-issue-124 -b codex/124-add-tests main
+```
+
+Avoid several agents writing to the same files/state unless coordination is explicit.
+
+### 3. Work incrementally
+
+Use small coherent commits and keep the issue/PR current when durable facts change.
+
+The branch contains the implementation state. The issue contains the task contract. Specs/ADRs contain durable system knowledge.
+
+### 4. Open the PR before the task is forgotten
+
+The PR must link the issue and document:
+- **HOW** it was implemented;
+- actual changes;
+- architecture/security/data impacts;
+- tests and validations;
+- evidence;
+- documentation updates;
+- known limitations/follow-up.
+
+A long-running PR can be draft while work is incomplete, but a **draft PR is not merge-ready**.
+
+### 5. Resume after interruption or context loss
+
+A new thread/agent should reconstruct state from:
+
+```text
+Issue
+  + linked PR / reviews / comments
+  + git status
+  + git diff
+  + branch history
+  + relevant files / specs / tests
+```
+
+Then determine:
+- what is already done;
+- what remains;
+- which acceptance criteria are still open;
+- which validations have already run.
+
+**Do not repeat completed work.**
+
+If the issue is no longer self-contained, update it before continuing.
+
+### 6. Merge only when the gates pass
+
+Before merge, use the relevant build/lint/type/unit/integration/E2E/security/documentation gates.
+
+An unresolved mandatory security finding blocks merge.
+
+After meaningful rebases or branch updates, rerun the relevant validations.
+
+### 7. Close the issue after merge + DoD
+
+Merge the PR, then close the issue only when:
+- acceptance criteria are satisfied;
+- Definition of Done is satisfied;
+- follow-up work is either unnecessary or represented by separate issues.
+
+The old default based on `TASK_STATE.md` remains **deprecated**. A task-state file is only appropriate when a specific repository explicitly requires one.
+
+For the full recovery and branch/PR guidance, see [Guide §26](./ai-engineering-with-codex-guide.md#26-long-running-work-and-recovery).
 
 ---
 
