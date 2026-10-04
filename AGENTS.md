@@ -4,6 +4,8 @@ For any substantial task, use a **self-contained GitHub issue** as the durable s
 
 The issue must be understandable and actionable by a human or LLM with repository access **without relying on previous chat history**.
 
+Use **one issue per distinct task**. Before creating a new issue, check whether an equivalent issue already exists; enrich the existing issue instead of duplicating it.
+
 ## Issue as source of truth
 
 The issue should capture, as relevant:
@@ -15,13 +17,15 @@ The issue should capture, as relevant:
 - out of scope;
 - acceptance criteria;
 - architectural, security, or implementation constraints that are intentional;
-- dependencies;
-- execution order / readiness metadata when the project uses them;
+- dependencies (`Depends on`);
+- project metadata such as `Phase`, `Priority`, `Execution Order`, and `Agent Ready` when used;
 - relevant files, specs, references, errors, or examples;
 - validation / tests;
 - Definition of Done.
 
 The issue owns the task's **WHY, WHAT, constraints, and expected result**. Leave the **HOW** to the contributor unless a specific technical or architectural choice is itself a requirement.
+
+`Execution Order` and `Depends on` are different concepts: execution order helps sequence ready work; dependencies identify work that must be completed first.
 
 Do not leave information required for future continuation only in the conversation. Put durable decisions in the issue, repository documentation, specs, or ADRs as appropriate.
 
