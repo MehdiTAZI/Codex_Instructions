@@ -846,27 +846,161 @@ Examples:
 
 Long-running work is one use case of this handbook, not its identity.
 
-The previous default based on `TASK_STATE.md` is **deprecated**.
+The previous default based on `TASK_STATE.md` is **deprecated**. For normal repository work, GitHub and Git should carry the durable state.
 
-Use:
-- self-contained issue;
-- linked PR and reviews;
-- branch state;
-- `git status`;
-- `git diff`;
-- relevant repository files/specs/tests;
-- Git history.
+![Long-running Git workflow](docs/images/10-long-running-git-workflow.svg)
 
-Recovery procedure:
+### 26.1 The durable state model
 
-1. read the issue;
-2. inspect linked PR/review discussion;
-3. inspect current branch/diff/status;
-4. identify completed work;
-5. identify remaining acceptance criteria;
-6. do **not** redo completed work;
-7. update the issue if durable context is missing;
-8. continue from the real repository state.
+Use different artifacts for different responsibilities:
+
+| Artifact | Responsibility |
+| --- | --- |
+| GitHub issue | WHY / WHAT / constraints / acceptance criteria / DoD |
+| branch or worktree | current implementation state |
+| commits | incremental checkpoints and history |
+| Pull Request | HOW / actual changes / tests / evidence / limitations |
+| specs / ADRs / docs | durable product and architecture knowledge |
+| tests / CI | executable verification |
+| GitHub Project | readiness, priority, dependencies, execution order, status |
+
+A conversation is a working surface, not the source of truth.
+
+### 26.2 Create the issue before the implementation becomes long-running
+
+Use **one distinct task = one self-contained issue**.
+
+A fresh human or agent should be able to understand the work without the original chat.
+
+Recommended issue contract:
+
+```markdown
+## Objective
+## Context / problem
+## Expected behavior / outcome
+## Scope
+## Out of scope
+## Acceptance criteria
+## Constraints
+## Dependencies / Depends on
+## Relevant files / specs / references
+## Validation / tests
+## Definition of Done
+```
+
+When project fields exist:
+- `Agent Ready = Yes` means the issue has enough durable context to start;
+- `Depends on` means a real prerequisite;
+- `Execution Order` sequences already-ready work.
+
+### 26.3 Create one primary branch intention
+
+Do not perform significant implementation directly on `main`.
+
+Typical branch flow:
+
+```bash
+git switch main
+git pull
+git switch -c codex/123-add-audit-control
+```
+
+Keep one primary intention per branch. Unrelated work belongs in another issue/branch/PR.
+
+For independent parallel workstreams, isolate state with worktrees:
+
+```bash
+git worktree add ../repo-issue-123 -b codex/123-add-audit-control main
+git worktree add ../repo-issue-124 -b codex/124-add-tests main
+```
+
+This is especially useful when several agents work in parallel. Avoid concurrent writes to the same files or shared mutable state unless coordination is explicit.
+
+### 26.4 Work incrementally and keep durable context current
+
+Use small coherent commits when they create useful recovery checkpoints.
+
+Do not turn commit messages into the only documentation of important decisions. If a decision matters after the branch disappears, put it in the issue, spec, ADR, or docs.
+
+Update the issue when:
+- scope changes;
+- a new dependency appears;
+- a critical decision changes the expected outcome;
+- a blocker affects how another contributor should resume.
+
+### 26.5 Link the Pull Request to the issue
+
+Open/update a PR that references the issue.
+
+The issue primarily captures **WHY / WHAT / constraints / result**.
+
+The PR primarily captures **HOW / actual implementation / evidence**:
+- what changed;
+- implementation approach;
+- architecture/security/data impacts;
+- migrations;
+- tests/validation;
+- evidence;
+- documentation;
+- known limitations/follow-up.
+
+A draft PR is useful as a long-running collaboration surface, but it is not merge-ready.
+
+### 26.6 Resume after interruption or context loss
+
+Reconstruct the real state from:
+
+1. GitHub issue;
+2. linked PR, review discussion, and relevant comments;
+3. `git status`;
+4. `git diff`;
+5. branch/commit history;
+6. relevant repository files, specs, ADRs, tests, and CI evidence.
+
+Then answer:
+
+```text
+What is already complete?
+What remains?
+Which acceptance criteria are still open?
+Which validations already passed?
+Which validations must be rerun?
+What is blocked?
+```
+
+Do **not** repeat completed work.
+
+If durable context is incomplete, update the issue/PR/docs **before** continuing so the next interruption is recoverable.
+
+### 26.7 Rebase/update carefully
+
+If the branch is stale:
+- compare actual content with `main`;
+- inspect already-merged dependency PRs;
+- update/rebase as appropriate;
+- resolve conflicts intentionally;
+- rerun validations affected by the update.
+
+Do not infer that a branch must be merged from `ahead_by` or commit topology alone. Squash merges can make old commits appear missing even when their functional content is already on `main`.
+
+### 26.8 Merge, verify, then close
+
+Merge only after the relevant gates pass:
+- build/lint/typecheck;
+- unit/integration/E2E as appropriate;
+- migrations/data compatibility;
+- security/secret checks;
+- diff review;
+- docs/spec updates;
+- acceptance criteria / DoD.
+
+An unresolved mandatory security finding blocks merge.
+
+After merge:
+1. verify any required post-merge/deployment evidence;
+2. confirm acceptance criteria and DoD;
+3. create separate follow-up issues for remaining work;
+4. close the original issue.
 
 Use a task-state file only when a specific repository workflow explicitly requires it.
 
