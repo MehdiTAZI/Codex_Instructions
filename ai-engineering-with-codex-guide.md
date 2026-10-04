@@ -141,7 +141,9 @@ If quality is insufficient, inspect in this order:
 5. Would higher reasoning materially help?
 6. Is the task actually several independent tasks that should be separated?
 
-A stronger model at lower effort can outperform a weaker model pushed to its maximum on some workloads. Evaluate on representative tasks.
+A stronger model at lower effort can outperform a weaker model pushed harder on some workloads. The reference playbook calls out the concrete example that **Astra Low can already outperform Sol High on some workloads**.
+
+Treat that as an evaluation lesson, not a universal benchmark claim: compare representative tasks from your own workflow.
 
 ---
 
