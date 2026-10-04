@@ -451,46 +451,56 @@ Lorsqu’une évolution touche l’authentification, l’autorisation, les rôle
 
 Principe :
 
-> **Une branche = une intention principale.**
+> **Une issue auto-porteuse = une intention principale = une branche de travail.**
+
+Pour toute tâche significative, l’issue GitHub est la source de vérité du **WHY / WHAT / contraintes / résultat attendu**. Elle doit être compréhensible et exécutable par un humain ou un LLM qui n’a pas accès à la conversation d’origine.
 
 Cycle typique :
 
 ```text
-main
+Issue auto-porteuse
   ↓
-feature/...
+branche
   ↓
-spec
+specs si nécessaire
   ↓
 implementation
   ↓
-tests
+tests / validations
+  ↓
+review du diff
+  ↓
+PR liée à l’issue
   ↓
 review
   ↓
-commit
-  ↓
-PR
-  ↓
 merge
+  ↓
+fermeture de l’issue
 ```
 
 Étapes :
 
-1. créer une branche courte ;
-2. lire les instructions et specs concernées ;
-3. clarifier le besoin ;
-4. mettre à jour les specs nécessaires ;
-5. implémenter la tranche minimale ;
-6. exécuter les validations ;
-7. revoir le diff ;
-8. corriger ;
-9. commit ;
-10. PR ou merge selon le workflow de l’équipe.
+1. créer ou enrichir l’issue avec le contexte complet, le périmètre, les critères d’acceptation, les dépendances et la Definition of Done ;
+2. vérifier les dépendances, l’ordre d’exécution et la readiness lorsque le projet utilise ces métadonnées ;
+3. créer une branche courte liée à l’intention de l’issue ;
+4. lire les instructions, specs et fichiers concernés ;
+5. préparer un plan avant modification lorsque la tâche est complexe ou risquée ;
+6. mettre à jour les specs nécessaires ;
+7. implémenter la tranche minimale ;
+8. exécuter les validations ;
+9. revoir le diff ;
+10. créer ou mettre à jour la PR en la liant à l’issue ;
+11. faire reviewer puis merger ;
+12. fermer l’issue uniquement lorsque les critères d’acceptation et la Definition of Done sont satisfaits.
+
+La PR documente le **HOW** : changements réalisés, approche d’implémentation, impacts architecture / sécurité / données lorsqu’ils existent, tests, documentation et limites connues.
+
+Le Project GitHub, lorsqu’il est utilisé, sert principalement à l’organisation, la priorité, l’ordre d’exécution, la readiness et le statut. Le contexte nécessaire à l’exécution doit rester dans l’issue et le repository.
 
 ---
 
-## 8. Revue du diff
+## 8. Revue du diff## 8. Revue du diff
 
 Prompt générique :
 
@@ -511,56 +521,73 @@ Ne propose pas de refactor cosmétique non demandé.
 
 ---
 
-## 9. Travailler sur les tâches longues
+## 9. Issues auto-porteuses : contexte durable d’une tâche
 
-Le contexte conversationnel est temporaire. Pour une tâche longue ou interrompable, maintenir :
+Le contexte conversationnel est temporaire. Pour toute tâche significative, maintenir le contexte durable dans une **issue GitHub auto-porteuse**.
 
-```text
-TASK_STATE.md
-```
+Une issue doit permettre à un nouvel agent de comprendre et poursuivre le travail sans relire les conversations précédentes.
 
 Structure recommandée :
 
 ```markdown
-# Task State
-
 ## Objectif
-## Terminé
-## En cours
-## À faire
-## Décisions prises
-## Fichiers importants
-## Validations effectuées
-## Risques / blocages
-## Prochaine étape
+## Contexte / problème
+## Comportement / résultat attendu
+## Périmètre
+## Hors périmètre
+## Critères d’acceptation
+## Contraintes
+## Dépendances
+## Ordre d’exécution / Agent Ready si utilisé
+## Fichiers / specs / références utiles
+## Validation / tests
+## Definition of Done
 ```
 
-Codex doit mettre ce fichier à jour régulièrement. Il peut être supprimé à la fin si sa conservation n’a plus de valeur.
+L’issue décrit principalement **WHY / WHAT / contraintes / résultat**. Le contributeur choisit le **HOW**, sauf lorsqu’une contrainte technique ou architecturale est intentionnellement imposée.
+
+Les décisions nécessaires à une future reprise ne doivent pas rester uniquement dans le chat. Selon leur nature, les conserver dans :
+
+- l’issue ;
+- la PR ;
+- les specs ;
+- une ADR ;
+- la documentation du repository.
+
+### Deprecated : Long-Running Tasks / `TASK_STATE.md`
+
+L’ancien workflow consistant à maintenir `TASK_STATE.md` pour les tâches longues ou interrompables est **déprécié**.
+
+Ne pas créer ou maintenir `TASK_STATE.md` comme mécanisme standard de continuité. Le contenu utile d’un ancien fichier de task state peut être migré dans l’issue correspondante.
+
+N’utiliser un fichier de task state que si un repository ou un workflow particulier l’exige explicitement.
 
 ---
 
-## 10. Reprendre après une interruption
+## 10. Reprendre après une interruption ou une perte de contexte
 
 Prompt recommandé :
 
 ```text
-Continue.
+Continue le travail de cette issue GitHub.
 
-Avant de poursuivre, reconstruis précisément l’état du travail à partir de :
+Avant de poursuivre, reconstruis précisément l’état réel du travail à partir de :
 
-1. TASK_STATE.md
-2. git status
-3. git diff
-4. les fichiers du repository
-5. l’historique encore disponible
+1. l’issue et ses commentaires pertinents ;
+2. les Pull Requests liées et leurs reviews ;
+3. git status ;
+4. git diff ;
+5. les fichiers, specs, tests et l’historique Git pertinents.
 
 Identifie ce qui est déjà terminé et ce qui reste à faire.
 Ne refais pas les tâches terminées.
 
-Puis continue la tâche initiale jusqu’à son terme.
+Si l’issue n’est plus suffisamment auto-porteuse pour permettre une reprise sûre, mets d’abord son contexte à jour.
+
+Puis continue jusqu’aux validations, à la PR/review, au merge et à la fermeture de l’issue lorsque la Definition of Done est satisfaite.
 ```
 
-La reprise doit s’appuyer en priorité sur l’état réel du repository.
+La reprise s’appuie en priorité sur l’issue et l’état réel du repository, pas sur la mémoire de la conversation.
 
 ---
 
@@ -569,40 +596,43 @@ La reprise doit s’appuyer en priorité sur l’état réel du repository.
 Garder le même thread lorsque :
 
 - la tâche reste identique ;
-- le contexte récent est encore utile ;
+- le contexte récent facilite encore l’exécution ;
 - Codex doit corriger sa propre implémentation ;
 - le nombre de fichiers reste raisonnable.
 
 Créer un nouveau thread lorsque :
 
-- on change de feature ;
+- on change de feature ou d’issue ;
 - le contexte contient trop d’explorations abandonnées ;
 - des contraintes anciennes polluent la tâche ;
 - une revue indépendante est souhaitée ;
 - la feature précédente est terminée.
 
-Dans un nouveau thread, relire au minimum `AGENTS.md`, les specs concernées, `TASK_STATE.md` s’il existe et le diff courant si nécessaire.
+Dans un nouveau thread, utiliser l’issue GitHub comme point d’entrée. Relire au minimum `AGENTS.md`, l’issue, les specs concernées, les PR liées et le diff courant si nécessaire.
+
+Le thread est un espace de travail temporaire ; l’issue et le repository portent le contexte durable.
 
 ---
 
 ## 12. Handoff
 
-Avant de quitter une longue session, produire un handoff court contenant :
+Un handoff n’a pas besoin d’un fichier séparé lorsque l’issue et la PR sont à jour.
 
-- objectif ;
-- état actuel ;
-- décisions prises ;
-- fichiers modifiés ;
-- validations réalisées ;
-- validations restantes ;
-- risques connus ;
-- prochaine étape.
+Avant de quitter une session importante, vérifier que le contexte durable permet une reprise sans le chat :
 
-Ce handoff peut être conservé dans `TASK_STATE.md`, une issue, une PR, une note temporaire ou le prochain prompt.
+- l’objectif et le périmètre restent clairs dans l’issue ;
+- les décisions importantes sont documentées ;
+- l’état d’avancement est visible dans l’issue ou la PR ;
+- les fichiers et specs importants sont référencés si nécessaire ;
+- les validations réalisées et restantes sont identifiables ;
+- les risques ou blocages sont visibles ;
+- la prochaine action peut être déduite sans ambiguïté.
+
+Mettre à jour l’issue, la PR ou la documentation durable concernée plutôt que créer un handoff conversationnel isolé.
 
 ---
 
-## 13. Prompts réutilisables
+## 13. Prompts réutilisables## 13. Prompts réutilisables
 
 ### 13.1 Cadrer une feature
 
@@ -1008,16 +1038,18 @@ L’objectif est la clarté, pas le nombre de fichiers.
 Cycle conseillé :
 
 1. besoin ;
-2. spec fonctionnelle ;
-3. vérification architecture / sécurité / données ;
-4. plan si nécessaire ;
-5. implémentation incrémentale ;
-6. tests ;
-7. revue ;
-8. documentation ;
-9. commit / PR ;
-10. merge ;
-11. retour d’expérience.
+2. issue GitHub auto-porteuse ;
+3. spec fonctionnelle si nécessaire ;
+4. vérification architecture / sécurité / données ;
+5. plan si nécessaire ;
+6. implémentation incrémentale ;
+7. tests ;
+8. revue ;
+9. documentation ;
+10. PR liée à l’issue ;
+11. merge ;
+12. fermeture de l’issue ;
+13. retour d’expérience.
 
 Après chaque friction récurrente, demander :
 
@@ -1040,7 +1072,7 @@ Le repository devient ainsi progressivement meilleur pour les humains comme pour
 | Installation / utilisation | `README.md` |
 | Exploitation | `docs/` |
 | Prompt répétable | `specs/prompts/` |
-| État temporaire d’une longue tâche | `TASK_STATE.md` |
+| Contexte durable d’une tâche | Issue GitHub auto-porteuse + PR liée |
 | Implémentation réelle | code + migrations + tests |
 
 ---
