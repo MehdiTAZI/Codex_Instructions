@@ -116,7 +116,32 @@ For risky changes, review from fresh context instead of relying on the implement
 
 ---
 
-## 5. Resume after interruption or context loss
+## 5. Run a long-running Git task
+
+```text
+Treat this as a long-running GitHub task.
+
+Use the GitHub issue as the durable task contract and make sure it is self-contained before relying on it.
+
+Workflow:
+1. read AGENTS.md, the issue, dependencies, specs/ADRs, and current repository state;
+2. use one dedicated branch or worktree for the issue;
+3. work incrementally and keep durable decisions in the issue/specs/ADRs rather than only in chat;
+4. open/update a PR linked to the issue;
+5. use the PR to document HOW, actual changes, tests, evidence, limitations, and review discussion;
+6. before resuming after any interruption, reconstruct state from the issue + PR/reviews + git status + git diff + branch history + relevant files/tests;
+7. identify completed work and do not redo it;
+8. if durable context is insufficient, update the issue/PR/docs before continuing;
+9. rerun validation after meaningful rebases/updates;
+10. merge only when required gates pass;
+11. close the issue only after merge and satisfaction of acceptance criteria / Definition of Done.
+
+Do not create TASK_STATE.md unless this repository explicitly requires it.
+```
+
+---
+
+## 6. Resume after interruption or context loss
 
 ```text
 Continue work on this GitHub issue.
@@ -143,7 +168,7 @@ Do not create TASK_STATE.md unless this repository explicitly requires it.
 
 ---
 
-## 6. Select surface, model, reasoning, and orchestration
+## 7. Select surface, model, reasoning, and orchestration
 
 ```text
 Recommend the lightest configuration that should reliably satisfy this task.
@@ -177,7 +202,7 @@ Treat model availability/pricing as a dated snapshot and verify current product 
 
 ---
 
-## 7. Run a high-stakes audit
+## 8. Run a high-stakes audit
 
 ```text
 Audit the available code, configuration, documentation, tests, and architecture as independent evidence.
@@ -212,7 +237,7 @@ Do not claim production validation without production-grade evidence.
 
 ---
 
-## 8. Prepare a feature prompt
+## 9. Prepare a feature prompt
 
 ```text
 Write the task contract using:
@@ -231,7 +256,7 @@ Make acceptance criteria machine-verifiable where possible.
 
 ---
 
-## 9. Context reset / fresh-thread handoff
+## 10. Context reset / fresh-thread handoff
 
 ```text
 Prepare the durable context needed for a fresh agent/thread to continue safely.
