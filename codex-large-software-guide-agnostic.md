@@ -20,6 +20,19 @@ Les chemins, exemples et commandes présentés ici doivent donc être adaptés a
 
 > **Principe central :** la conversation sert à travailler ; le repository sert à mémoriser, transmettre, vérifier et reprendre le travail.
 
+## Lecture rapide
+
+Le guide reste complet et textuel, mais les décisions les plus fréquentes disposent maintenant d’un **résumé visuel**. Le texte reste la référence normative ; les schémas servent à comprendre et retrouver rapidement la bonne règle.
+
+| Besoin | Aller directement à |
+| --- | --- |
+| workflow issue → PR → merge, gates et niveau de preuve | [§7 — Workflow Git](#7-workflow-git-recommandé) |
+| review d’un diff / PR | [§8 — Revue du diff](#8-revue-du-diff) |
+| reprendre une tâche après perte de contexte | [§10 — Reprise](#10-reprendre-après-une-interruption-ou-une-perte-de-contexte) |
+| choisir Chat, Work ou Codex | [§26 — Surface](#26-choisir-la-bonne-surface--chat-work-ou-codex) |
+| choisir modèle / reasoning / orchestration | [§27 — Modèle et reasoning](#27-modèle-reasoning-et-orchestration) |
+| choisir un routage coding / architecture / audit | [§28 — Routage pratique](#28-routage-pratique-pour-coding-architecture-et-audit) |
+
 ---
 
 ## 1. Principes directeurs
@@ -481,29 +494,11 @@ Règles de branche :
 - lorsque la plateforme le permet, protéger `main` avec PR obligatoire et status checks requis plutôt que dépendre uniquement de conventions humaines ;
 - lorsque plusieurs agents travaillent en parallèle, isoler les workstreams indépendants dans des branches ou worktrees séparés et éviter les écritures concurrentes sur les mêmes fichiers sans coordination explicite.
 
-Cycle typique :
+### Vue d’ensemble
 
-```text
-Issue auto-porteuse
-  ↓
-branche
-  ↓
-specs si nécessaire
-  ↓
-implementation
-  ↓
-tests / validations
-  ↓
-review du diff
-  ↓
-PR liée à l’issue
-  ↓
-review
-  ↓
-merge
-  ↓
-fermeture de l’issue
-```
+![Workflow Git, merge gates et niveaux de preuve](docs/images/08-git-workflow-gates-evidence.svg)
+
+Le visuel résume le flux et les principaux gates. Les étapes détaillées ci-dessous restent la règle d’exécution, notamment pour les dépendances, branches obsolètes, migrations et validations spécifiques.
 
 Étapes :
 
@@ -1056,6 +1051,8 @@ Ne lancer aucune action destructive sans validation explicite.
 
 ### 20.1 Niveaux de preuve
 
+Le niveau de preuve est également représenté dans le [schéma workflow / merge gates](docs/images/08-git-workflow-gates-evidence.svg).
+
 Ne pas confondre les niveaux suivants :
 
 1. **revue statique** : lecture du code / configuration ;
@@ -1234,6 +1231,10 @@ Le repository devient ainsi progressivement meilleur pour les humains comme pour
 
 Avant de choisir un modèle ou un niveau de reasoning, choisir **l’environnement adapté au travail**.
 
+![Chat vs Work vs Codex](docs/images/02-chat-vs-work-vs-codex.svg)
+
+Le visuel donne la décision rapide ; le tableau suivant conserve les critères textuels et reste plus facile à rechercher dans le repository.
+
 | Surface | Utiliser pour | Éviter comme choix naturel pour |
 | --- | --- | --- |
 | **Chat** | questions rapides, brainstorming, explications, recherche ponctuelle, préparation de décisions et de prompts | modifier durablement un repository ou conduire un workflow technique long |
@@ -1252,6 +1253,8 @@ Chat peut servir à cadrer ou challenger une décision. Work est préférable lo
 
 > **Snapshot OpenAI : octobre 2026.** Les noms de modèles, prix, disponibilités et options produit peuvent évoluer. Vérifier les sources officielles avant d’en faire une contrainte durable.
 
+![Les 4 dimensions : modèle, reasoning, surface et orchestration](docs/images/01-four-dimensions.svg)
+
 Le choix correct se fait sur **quatre dimensions distinctes** :
 
 1. **modèle** : capacité de base ;
@@ -1262,6 +1265,10 @@ Le choix correct se fait sur **quatre dimensions distinctes** :
 Ne pas mélanger ces concepts. Changer de modèle, augmenter le reasoning et ajouter des agents résolvent des problèmes différents.
 
 ### 27.1 Hiérarchie pratique des modèles
+
+![Quel modèle utiliser](docs/images/03-model-selection.svg)
+
+Le schéma fournit le routage rapide. Le tableau garde le positionnement sous une forme textuelle, diffable et recherchable.
 
 | Modèle | Positionnement | Usage pratique |
 | --- | --- | --- |
@@ -1281,6 +1288,8 @@ Au 4 octobre 2026, les tarifs API standard publiés pour les modèles principaux
 Ces prix sont **informatifs et datés**. Ne pas les dupliquer dans des règles permanentes sans date ni source.
 
 ### 27.2 Niveaux de reasoning
+
+![Quel niveau de reasoning utiliser](docs/images/04-reasoning-levels.svg)
 
 Dans l’API, les niveaux disponibles dépendent du modèle et peuvent inclure :
 
@@ -1303,6 +1312,8 @@ Ne pas supposer qu’un modèle plus faible poussé au maximum est toujours meil
 > Note API : `reasoning.mode` (`standard` / `pro` lorsqu’il est supporté) et `reasoning.effort` sont deux réglages distincts.
 
 ### 27.3 Max vs Ultra
+
+![Max vs Ultra](docs/images/05-max-vs-ultra.svg)
 
 **Max** est un niveau de reasoning API / modèle lorsqu’il est supporté.
 
@@ -1343,6 +1354,10 @@ La règle générale est :
 
 ### 28.1 Coding
 
+![Coding playbook](docs/images/06-coding-playbook.svg)
+
+Le tableau ci-dessous reste utile comme version compacte et facilement diffable.
+
 | Besoin | Surface | Modèle | Reasoning |
 | --- | --- | --- | --- |
 | Fonction / script simple | Codex | GPT-6.1 Sol | Medium |
@@ -1365,6 +1380,8 @@ Ultra
 ```
 
 ### 28.2 Architecture Data/AI, Cloud et audit
+
+![Routage Architecture Data/AI, Cloud et audit](docs/images/07-data-ai-cloud-audit-routing.svg)
 
 | Besoin | Routage pratique |
 | --- | --- |
