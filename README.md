@@ -167,7 +167,7 @@ Copy-ready prompts are available in [prompt.md](./prompt.md).
 
 ---
 
-## 4. Recommended project structure## 4. Recommended project structure
+## 4. Recommended project structure
 
 For a significant product, the guide recommends a conceptual structure such as:
 
