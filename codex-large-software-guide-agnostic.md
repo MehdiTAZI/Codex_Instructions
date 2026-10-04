@@ -500,7 +500,7 @@ Le Project GitHub, lorsqu’il est utilisé, sert principalement à l’organisa
 
 ---
 
-## 8. Revue du diff## 8. Revue du diff
+## 8. Revue du diff
 
 Prompt générique :
 
@@ -632,7 +632,7 @@ Mettre à jour l’issue, la PR ou la documentation durable concernée plutôt q
 
 ---
 
-## 13. Prompts réutilisables## 13. Prompts réutilisables
+## 13. Prompts réutilisables
 
 ### 13.1 Cadrer une feature
 
