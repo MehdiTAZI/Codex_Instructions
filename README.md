@@ -297,8 +297,8 @@ Commit / PR
 For larger tasks, [`prompt.md`](./prompt.md) also suggests preparing the work before moving into Codex:
 
 1. brainstorm and clarify the requirement;
-2. create or enrich the self-contained GitHub issue;
-3. generate or validate the implementation plan when needed;
+2. generate or validate the implementation plan when needed;
+3. create or enrich the self-contained GitHub issue with the durable context and constraints;
 4. gather the required inputs and references;
 5. execute the issue in Codex and carry it through validation and PR review.
 
