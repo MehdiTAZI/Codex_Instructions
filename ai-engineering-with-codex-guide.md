@@ -381,6 +381,36 @@ Use an ADR when a decision is structurally important and worth preserving:
 
 Do not create documentation ceremony for trivial local changes. Documentation should reduce future ambiguity, not increase bureaucracy.
 
+### Conceptual model vs implementation
+
+Keep the conceptual/domain model independent from a specific ORM, SQL dialect, document store, or framework.
+
+A useful direction is:
+
+```text
+conceptual data model
+      ↓
+ORM / schema / collections
+      ↓
+migrations
+      ↓
+real deployed data structure
+```
+
+The implementation should realize the conceptual model; it should not become the only documentation of it.
+
+### Architecture principles
+
+Prefer:
+- clear boundaries and responsibilities;
+- low coupling;
+- explicit dependencies;
+- simple designs that fit the current repository;
+- abstractions justified by real repetition or change pressure;
+- observable and reversible operational behavior.
+
+Do not redesign a repository merely because an agent prefers a different architecture. Adapt to the existing system unless the task explicitly calls for architectural change.
+
 ---
 
 ## 13. Self-contained GitHub issues
@@ -572,6 +602,22 @@ issue / PR execution
 
 If a session becomes trajectory-poisoned or overloaded with obsolete assumptions, start a fresh context and reconstruct from durable repository state.
 
+### Fresh-thread handoff
+
+A handoff should not depend on a narrative chat summary.
+
+Before leaving a long session, make sure durable artifacts contain:
+- current objective and scope;
+- decisions and rationale;
+- implementation state;
+- relevant files/specs;
+- completed validation;
+- remaining acceptance criteria;
+- blockers and dependencies;
+- next action.
+
+A fresh thread or agent should begin by reading those artifacts and the current Git state.
+
 ---
 
 ## 18. Git workflow
@@ -745,6 +791,17 @@ in prompts, issues, logs, examples, or repository fixtures unless the project ha
 
 Use synthetic or sanitized data for tests and evidence.
 
+### Demo, test, and production data
+
+Do not quietly mix demo/test data with real production data.
+
+For examples, fixtures, screenshots, logs, and public evidence:
+- prefer synthetic data;
+- sanitize identifiers and secrets;
+- avoid real customer/personal data;
+- make simulated/demo status explicit;
+- never present synthetic evidence as production proof.
+
 ---
 
 ## 25. Evidence levels
@@ -761,6 +818,19 @@ Evidence ladder:
 6. **Operational proof** — observed behavior through metrics, logs, health checks, output data, or real-user/system signals.
 
 Claims must match the evidence level actually obtained.
+
+### Release and deployment discipline
+
+For significant releases, keep deployment evidence proportional to risk:
+- release notes or PR summary;
+- version/tag from reviewed `main`;
+- deployment order when multiple components are involved;
+- rollback strategy or restore point;
+- post-deployment checks;
+- sanitized logs/metrics/output where useful;
+- clear distinction between functional proof and performance/benchmark proof.
+
+For infrastructure or platform changes, prefer ordered, reproducible deployment steps rather than undocumented manual actions.
 
 Examples:
 - `terraform validate` does not prove `terraform apply` succeeds.
@@ -867,7 +937,35 @@ For recurring workflows, version reusable prompts in the repository.
 
 ---
 
-## 29. Definition of Done
+## 29. Long-lived product cadence
+
+For a long-lived product, compound improvements continuously rather than accumulating a large “AI cleanup” phase.
+
+A useful cadence is:
+
+```text
+issue / feature
+   ↓
+implementation + verification
+   ↓
+review + merge
+   ↓
+update specs / ADR / AGENTS / prompts only when the lesson is durable
+   ↓
+next bounded task
+```
+
+After each meaningful change:
+- keep specs aligned with behavior;
+- preserve architectural decisions that matter;
+- add tests for regressions that should never return;
+- convert recurring mistakes into deterministic guardrails;
+- remove obsolete instructions;
+- keep the repository easy for a fresh human or agent to understand.
+
+---
+
+## 30. Definition of Done
 
 A significant engineering task is complete only when the relevant subset is true:
 
@@ -891,7 +989,7 @@ Project-specific commands belong in that project’s `AGENTS.md`.
 
 ---
 
-## 30. Anti-patterns
+## 31. Anti-patterns
 
 Avoid:
 
@@ -919,7 +1017,7 @@ Avoid:
 
 ---
 
-## 31. Reusable evaluation mindset
+## 32. Reusable evaluation mindset
 
 For a recurring AI workflow, do not choose models by intuition alone.
 
@@ -942,7 +1040,7 @@ Re-evaluate when:
 
 ---
 
-## 32. Sources and October 2026 OpenAI snapshot
+## 33. Sources and October 2026 OpenAI snapshot
 
 The durable engineering practices in this handbook are repository/workflow principles. The following model/product facts are a **dated October 2026 snapshot** and should be rechecked before automation or procurement decisions.
 
@@ -961,7 +1059,7 @@ Availability of models, Ultra, Ultrafast, and workspace options depends on plan,
 
 ---
 
-## 33. Final principle
+## 34. Final principle
 
 The goal of AI Engineering with Codex is not to make an agent remember everything.
 
