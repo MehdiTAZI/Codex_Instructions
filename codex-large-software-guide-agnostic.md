@@ -478,6 +478,7 @@ Règles de branche :
 - une branche doit porter une intention principale ;
 - séparer les changements indépendants dans des PR différentes ;
 - garder `main` dans un état intégrable et vérifiable ;
+- lorsque la plateforme le permet, protéger `main` avec PR obligatoire et status checks requis plutôt que dépendre uniquement de conventions humaines ;
 - lorsque plusieurs agents travaillent en parallèle, isoler les workstreams indépendants dans des branches ou worktrees séparés et éviter les écritures concurrentes sur les mêmes fichiers sans coordination explicite.
 
 Cycle typique :
@@ -525,6 +526,15 @@ La PR documente le **HOW** : changements réalisés, approche d’implémentatio
 `Execution Order` et `Depends on` sont différents : le premier sert à séquencer le travail prêt à être exécuté ; le second exprime de vraies dépendances qui doivent être satisfaites au préalable.
 
 Le Project GitHub, lorsqu’il est utilisé, sert principalement à l’organisation, la priorité, l’ordre d’exécution, la readiness et le statut. Le contexte nécessaire à l’exécution doit rester dans l’issue et le repository.
+
+Lorsque les champs `Execution Order`, `Agent Ready` et `Depends on` sont utilisés, une règle de prise de travail simple est :
+
+1. considérer uniquement les issues ouvertes avec `Agent Ready = Yes` ;
+2. exclure celles dont les dépendances ne sont pas satisfaites ;
+3. parmi les tâches restantes, privilégier le plus petit `Execution Order` ;
+4. ne pas interpréter `Execution Order` comme une dépendance implicite.
+
+`Agent Ready` signifie que l’issue contient suffisamment de contexte, de contraintes et de critères d’acceptation pour être exécutée sans reconstruire le besoin depuis un chat.
 
 ### 7.1 Gates avant merge
 
@@ -618,6 +628,8 @@ Ordre de priorité d’une revue :
 8. style et cosmétique en dernier.
 
 Une revue doit chercher ce qui peut réellement casser ou invalider le besoin, pas maximiser le nombre de commentaires.
+
+L’agent peut proposer, implémenter et reviewer, mais la responsabilité des décisions structurantes, destructives, de sécurité ou de production reste humaine. L’autonomie d’exécution ne doit pas devenir une délégation aveugle de responsabilité.
 
 ---
 
