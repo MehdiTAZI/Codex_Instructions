@@ -1,6 +1,6 @@
 # Codex Instructions
 
-A reference repository for **working effectively with Codex on software projects**, especially when a project becomes long-running, complex, or needs to survive context loss and interrupted sessions.
+A reference repository for **working effectively with Codex on software projects**, especially when work is complex, distributed across sessions, or needs to survive context loss. The preferred continuity mechanism is a **self-contained GitHub issue**, not conversation memory or a task-state scratch file.
 
 The goal is not to prescribe a specific technology stack. The approach is deliberately **stack-agnostic** and can be adapted to any language, framework, database, ORM, cloud platform, CI/CD system, or deployment model.
 
@@ -12,7 +12,7 @@ The goal is not to prescribe a specific technology stack. The approach is delibe
 
 | File | Purpose |
 | --- | --- |
-| [`AGENTS.md`](./AGENTS.md) | Persistent instructions for Codex, including long-running task recovery rules. |
+| [`AGENTS.md`](./AGENTS.md) | Persistent instructions for Codex, including the issue-driven context and recovery workflow. |
 | [`prompt.md`](./prompt.md) | Reusable prompts for starting, resuming, and organizing Codex work. |
 | [`codex-large-software-guide-agnostic.md`](./codex-large-software-guide-agnostic.md) | Detailed, stack-agnostic guide for building and maintaining software with Codex. |
 | `README.md` | Human-oriented overview and entry point to this repository. |
@@ -49,7 +49,7 @@ In practice:
 - version important architectural decisions;
 - evolve tests and documentation together with the code;
 - review the diff and run project validations before considering work complete;
-- use `TASK_STATE.md` for long-running or interruptible tasks.
+- represent substantial tasks with self-contained GitHub issues that preserve the context required for execution and recovery.
 
 ---
 
@@ -76,53 +76,101 @@ Typical content includes:
 
 It should **not** become an exhaustive product manual.
 
-The `AGENTS.md` in this repository focuses on one recurring operational problem: making long-running work recoverable through a maintained `TASK_STATE.md` file.
+The `AGENTS.md` in this repository focuses on one recurring operational problem: making work recoverable across threads, agents, and context loss through **self-contained GitHub issues linked to branches and Pull Requests**.
 
 ---
 
-## 3. Long-running tasks and recovery
+## 3. Issue-driven task context and recovery
 
-For a task that may exceed one session or the available context window, maintain:
+For any substantial task, create or enrich a **self-contained GitHub issue**. Use **one issue per distinct task** and, before creating a new one, check for an equivalent issue to enrich instead of duplicating it. The issue is the durable source of truth for the task's **WHY, WHAT, constraints, and expected result**.
 
-```text
-TASK_STATE.md
-```
+A contributor or LLM with repository access should be able to understand and continue the task without needing the chat that created it.
 
-A useful structure is:
+A useful issue structure is:
 
 ```markdown
-# Task State
-
 ## Objective
 
-## Completed
+## Context / problem
 
-## In Progress
+## Expected behavior / outcome
 
-## Remaining
+## Scope
 
-## Decisions
+## Out of scope
 
-## Important / Modified Files
+## Acceptance criteria
 
-## Validation Performed
+## Constraints
+- Architecture
+- Security
+- Other intentional constraints
 
-## Known Issues / Risks
+## Dependencies
+- Depends on
 
-## Next Action
+## Project metadata when used
+- Phase
+- Priority
+- Execution Order
+- Agent Ready
+
+## Relevant files / specs / references
+
+## Validation / tests
+
+## Definition of Done
 ```
 
-When resuming an interrupted task, reconstruct the real state of the work from:
+The issue should capture **WHY / WHAT / constraints / result**. The implementation **HOW** remains with the contributor unless a specific technical or architectural choice is itself a requirement.
 
-1. `TASK_STATE.md`;
-2. `git status`;
-3. `git diff`;
-4. the repository files;
-5. any conversation context that is still available.
+`Execution Order` is not a dependency: it sequences ready work. `Depends on` identifies prerequisites that must be satisfied first. A GitHub Project may expose these fields for organization, but the issue body must still contain the context required to execute the task.
+
+The recommended lifecycle is:
+
+```text
+Issue
+  ↓
+Branch
+  ↓
+Implementation
+  ↓
+Tests / validation
+  ↓
+Pull Request
+  ↓
+Review
+  ↓
+Merge
+  ↓
+Issue closure
+```
+
+The Pull Request should reference the issue and document the implementation approach, changes, relevant architecture/security/data impacts, tests and validations, documentation updates, and known limitations.
+
+Close an issue only when the change is merged and its acceptance criteria / Definition of Done are satisfied.
+
+### Resume after an interruption or context loss
+
+Reconstruct the real state of the work from:
+
+1. the GitHub issue;
+2. linked Pull Requests, reviews, and relevant issue comments;
+3. `git status`;
+4. `git diff`;
+5. relevant repository files, specs, tests, and Git history.
 
 Then determine what is already complete, what remains, and **do not repeat completed work**.
 
-Copy-ready prompts are available in [`prompt.md`](./prompt.md).
+If the issue is no longer self-contained enough for another contributor to continue safely, update the issue before proceeding.
+
+### Deprecated: Long-Running Tasks / `TASK_STATE.md`
+
+The previous workflow based on maintaining `TASK_STATE.md` for long-running or interruptible tasks is **deprecated**.
+
+Do not create or maintain `TASK_STATE.md` as the default recovery mechanism. Existing task-state content may be migrated into the relevant GitHub issue. Only use a task-state file when a specific repository or workflow explicitly requires it.
+
+Copy-ready prompts are available in [prompt.md](./prompt.md).
 
 ---
 
@@ -227,6 +275,8 @@ For a new feature:
 ```text
 Requirement
     ↓
+Self-contained GitHub issue
+    ↓
 Functional specification
     ↓
 Architecture / Security / Data impact
@@ -247,10 +297,10 @@ Commit / PR
 For larger tasks, [`prompt.md`](./prompt.md) also suggests preparing the work before moving into Codex:
 
 1. brainstorm and clarify the requirement;
-2. generate or validate the implementation plan;
-3. prepare the final Codex prompt;
+2. generate or validate the implementation plan when needed;
+3. create or enrich the self-contained GitHub issue with the durable context and constraints;
 4. gather the required inputs and references;
-5. execute the task in Codex.
+5. execute the issue in Codex and carry it through validation and PR review.
 
 A useful organizational convention is:
 
@@ -299,7 +349,9 @@ Avoid:
 - ignoring migrations, tests, or diff review;
 - committing secrets or sensitive production data;
 - over-engineering simple requirements;
-- redoing already completed work after a context interruption.
+- redoing already completed work after a context interruption;
+- creating issues that depend on undocumented chat history;
+- keeping task-critical decisions only in a conversation.
 
 ---
 
@@ -326,7 +378,7 @@ The guide is intentionally detailed and should be treated as **optional referenc
 | Installation and usage | `README.md` |
 | Operations / runbooks | `docs/` |
 | Reusable prompt | `specs/prompts/` or `prompt.md` |
-| Temporary long-task state | `TASK_STATE.md` |
+| Durable task context | Self-contained GitHub issue + linked PR |
 | Actual implementation | code + migrations + tests |
 
 The goal is to make the repository understandable and recoverable enough that a human or a new Codex thread can continue the work without depending on a previous conversation.
