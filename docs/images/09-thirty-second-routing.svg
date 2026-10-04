@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="730" viewBox="0 0 1200 730">
+<rect width="1200" height="730" fill="#FFFFFF"/>
+<rect x="565" y="34" width="70" height="5" rx="3" fill="#2563EB"/>
+<text x="600" y="92" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="42" font-weight="800" fill="#0F172A" text-anchor="middle">The 30-second routing rule</text>
+<text x="600" y="132" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" fill="#64748B" text-anchor="middle">Use the smallest configuration that reliably satisfies the engineering need.</text>
+
+<rect x="45" y="210" width="255" height="340" rx="20" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+<circle cx="80" cy="245" r="27" fill="#2563EB"/><text x="80" y="253" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle">1</text>
+<text x="120" y="250" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="800" fill="#0F172A">Simple / repetitive</text>
+<text x="65" y="355" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="800" fill="#2563EB"><tspan x="65">Luna or</tspan><tspan x="65" dy="28">6.1 Sol Medium</tspan></text>
+<text x="65" y="445" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" fill="#64748B"><tspan x="65">Optimize for speed, cost,</tspan><tspan x="65" dy="23">and volume.</tspan></text>
+
+<line x1="300" y1="375" x2="325" y2="375" stroke="#2563EB" stroke-width="3"/><path d="M315 368 L325 375 L315 382" fill="none" stroke="#2563EB" stroke-width="3"/>
+
+<rect x="330" y="210" width="255" height="340" rx="20" fill="#ECFDF5" stroke="#14B8A6" stroke-width="1.5"/>
+<circle cx="365" cy="245" r="27" fill="#14B8A6"/><text x="365" y="253" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle">2</text>
+<text x="405" y="250" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="800" fill="#0F172A"><tspan x="405">Complex professional</tspan><tspan x="405" dy="26">work</tspan></text>
+<text x="350" y="370" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="800" fill="#14B8A6">6.1 Sol High</text>
+<text x="350" y="445" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" fill="#64748B"><tspan x="350">Default balance for serious</tspan><tspan x="350" dy="23">engineering.</tspan></text>
+
+<line x1="585" y1="375" x2="610" y2="375" stroke="#2563EB" stroke-width="3"/><path d="M600 368 L610 375 L600 382" fill="none" stroke="#2563EB" stroke-width="3"/>
+
+<rect x="615" y="210" width="255" height="340" rx="20" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.5"/>
+<circle cx="650" cy="245" r="27" fill="#7C3AED"/><text x="650" y="253" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle">3</text>
+<text x="690" y="250" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="800" fill="#0F172A">Very difficult problem</text>
+<text x="635" y="355" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="800" fill="#7C3AED"><tspan x="635">6.1 Sol Max</tspan><tspan x="635" dy="28">→ Astra High / Max</tspan></text>
+<text x="635" y="445" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" fill="#64748B"><tspan x="635">Escalate depth or capability</tspan><tspan x="635" dy="23">when stakes justify it.</tspan></text>
+
+<line x1="870" y1="375" x2="895" y2="375" stroke="#2563EB" stroke-width="3"/><path d="M885 368 L895 375 L885 382" fill="none" stroke="#2563EB" stroke-width="3"/>
+
+<rect x="900" y="210" width="255" height="340" rx="20" fill="#ECFDF5" stroke="#14B8A6" stroke-width="1.5"/>
+<circle cx="935" cy="245" r="27" fill="#14B8A6"/><text x="935" y="253" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle">4</text>
+<text x="975" y="250" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="800" fill="#0F172A"><tspan x="975">Independent</tspan><tspan x="975" dy="26">workstreams</tspan></text>
+<text x="920" y="370" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800" fill="#14B8A6">Ultra</text>
+<text x="920" y="445" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" fill="#64748B"><tspan x="920">Use only when parallelism</tspan><tspan x="920" dy="23">creates real value.</tspan></text>
+
+<rect x="60" y="600" width="1080" height="90" rx="16" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+<text x="90" y="636" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="800" fill="#0F172A">Repository / code at the center?</text>
+<text x="90" y="670" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#2563EB">Use Codex. Default: 6.1 Sol High → Max if needed → Astra when stakes rise → Ultra if genuinely parallelizable.</text>
+</svg>
