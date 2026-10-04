@@ -14,7 +14,7 @@ The goal is not to prescribe a specific technology stack. The approach is delibe
 | --- | --- |
 | [`AGENTS.md`](./AGENTS.md) | Persistent instructions for Codex, including the issue-driven context and recovery workflow. |
 | [`prompt.md`](./prompt.md) | Reusable prompts for starting, resuming, and organizing Codex work. |
-| [`codex-large-software-guide-agnostic.md`](./codex-large-software-guide-agnostic.md) | Detailed, stack-agnostic guide for building and maintaining software with Codex. |
+| [`codex-large-software-guide-agnostic.md`](./codex-large-software-guide-agnostic.md) | Detailed, stack-agnostic guide covering software delivery, issue/PR governance, validation/review, and Chat/Work/Codex model-reasoning routing. |
 | `README.md` | Human-oriented overview and entry point to this repository. |
 
 ---
@@ -357,7 +357,7 @@ Avoid:
 
 ## 8. Detailed guide
 
-For the full methodology, examples, prompts, Git workflow, ADR guidance, architecture/security/data-model reviews, deployment practices, and reference structures, see:
+For the full methodology, examples, prompts, Git/PR workflow, CI/security merge gates, ADR guidance, architecture/security/data-model reviews, deployment evidence, model/reasoning selection, multi-agent guidance, and reference structures, see:
 
 **[`codex-large-software-guide-agnostic.md`](./codex-large-software-guide-agnostic.md)**
 
