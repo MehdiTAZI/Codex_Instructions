@@ -178,6 +178,20 @@ Ne pas y mettre :
 
 > Si Codex répète régulièrement la même erreur, transformer la correction en règle durable dans `AGENTS.md` ou dans un `AGENTS.md` local au sous-répertoire concerné.
 
+#### Hiérarchie et portée des instructions
+
+Utiliser `AGENTS.md` comme **contrat agent canonique** du repository.
+
+Principes :
+
+- un `AGENTS.md` racine porte les règles communes ;
+- un `AGENTS.md` local peut spécialiser ou renforcer les règles pour un sous-arbre lorsque c’est réellement utile ;
+- l’agent doit lire les instructions applicables au périmètre qu’il modifie avant d’écrire du code ;
+- éviter des fichiers parallèles du type `CHATGPT.md`, `CODEX.md` ou autres contrats dupliqués s’ils peuvent diverger ;
+- les règles durables vont dans `AGENTS.md`, les comportements produit dans les specs, et les décisions structurantes dans les ADR.
+
+Le but est d’éviter plusieurs sources normatives contradictoires. Une règle récurrente doit avoir un emplacement canonique identifiable.
+
 ### 2.2 `specs/modules/`
 
 Les specs fonctionnelles vivent dans `specs/modules/`.
@@ -457,6 +471,15 @@ Pour toute tâche significative, l’issue GitHub est la source de vérité du *
 
 Utiliser **une issue par tâche distincte**. Avant d’en créer une nouvelle, rechercher une issue équivalente et l’enrichir plutôt que créer un doublon.
 
+Règles de branche :
+
+- ne pas développer directement sur `main` ;
+- partir d’un `main` à jour ou d’une base explicitement choisie ;
+- une branche doit porter une intention principale ;
+- séparer les changements indépendants dans des PR différentes ;
+- garder `main` dans un état intégrable et vérifiable ;
+- lorsque plusieurs agents travaillent en parallèle, isoler les workstreams indépendants dans des branches ou worktrees séparés et éviter les écritures concurrentes sur les mêmes fichiers sans coordination explicite.
+
 Cycle typique :
 
 ```text
@@ -503,6 +526,63 @@ La PR documente le **HOW** : changements réalisés, approche d’implémentatio
 
 Le Project GitHub, lorsqu’il est utilisé, sert principalement à l’organisation, la priorité, l’ordre d’exécution, la readiness et le statut. Le contexte nécessaire à l’exécution doit rester dans l’issue et le repository.
 
+### 7.1 Gates avant merge
+
+Une PR n’est pas mergeable uniquement parce que le code “semble bon”.
+
+Avant merge, vérifier selon le projet :
+
+- PR sortie du mode draft ;
+- branche suffisamment à jour par rapport à la cible ;
+- build / compilation ;
+- lint / format / type checking ;
+- tests unitaires ;
+- tests d’intégration ;
+- tests end-to-end ou smoke tests lorsque le changement traverse plusieurs composants ;
+- migrations et compatibilité de données ;
+- analyses statiques ;
+- contrôles de sécurité et secrets ;
+- revue du diff ;
+- documentation et specs impactées ;
+- critères d’acceptation et Definition of Done.
+
+**Un finding sécurité non résolu ou une validation obligatoire en échec bloque le merge.**
+
+Pour un changement transverse, un test unitaire vert n’est pas une preuve suffisante : il faut valider le flux intégré pertinent.
+
+### 7.2 Branches obsolètes, PR empilées et squash merges
+
+Ne pas décider qu’une branche doit être mergée simplement parce qu’elle est “ahead” ou contient des commits absents de `main`.
+
+Un squash merge réécrit l’historique : une ancienne branche peut sembler contenir des commits supplémentaires alors que son **contenu fonctionnel** est déjà intégré.
+
+Avant de merger une branche ancienne ou empilée :
+
+1. comparer le contenu réel avec `main` ;
+2. vérifier les PR déjà mergées dont elle dépend ;
+3. identifier ce qui est réellement absent de `main` ;
+4. rebaser ou mettre à jour la branche si nécessaire ;
+5. rejouer les validations après toute mise à jour significative ;
+6. fermer les PR devenues redondantes ou remplacées au lieu de merger du bruit historique.
+
+La topologie Git est un signal ; **le diff réel et les validations sont la preuve**.
+
+### 7.3 Dépendances et migrations majeures
+
+Les mises à jour majeures de framework, provider, runtime, ORM ou dépendances critiques demandent un traitement explicite.
+
+Ne pas auto-merger une upgrade majeure uniquement parce que les checks superficiels passent. Vérifier notamment :
+
+- breaking changes ;
+- compatibilité avec le code et l’infrastructure ;
+- lockfiles ;
+- migrations ;
+- changements de comportement par défaut ;
+- tests réellement représentatifs ;
+- impact sur les autres stacks ou composants.
+
+Lorsqu’une migration touche plusieurs éléments qui doivent évoluer ensemble, préférer une **PR coordonnée dédiée** plutôt qu’une série de merges partiels qui laissent temporairement `main` incohérent.
+
 ---
 
 ## 8. Revue du diff
@@ -523,6 +603,21 @@ Priorise :
 
 Ne propose pas de refactor cosmétique non demandé.
 ```
+
+Pour une évolution importante ou risquée, effectuer si possible une **seconde revue en contexte frais** : un reviewer ou agent qui n’a pas participé à l’implémentation détecte mieux les hypothèses implicites, oublis et rationalisations du premier passage.
+
+Ordre de priorité d’une revue :
+
+1. correctness / bugs / régressions ;
+2. sécurité et isolation ;
+3. cohérence avec les specs, ADR et invariants ;
+4. modèle de données et migrations ;
+5. couverture de tests et qualité des preuves ;
+6. opérabilité / rollback / observabilité ;
+7. maintenabilité ;
+8. style et cosmétique en dernier.
+
+Une revue doit chercher ce qui peut réellement casser ou invalider le besoin, pas maximiser le nombre de commentaires.
 
 ---
 
@@ -783,7 +878,11 @@ Ne propose pas d’optimisation physique sans besoin démontré.
 
 ## 14. Plan avant tâche complexe
 
-Pour une migration, une refonte importante ou un changement à risque, demander un plan avant l’implémentation.
+Pour une migration, une refonte importante, un changement transverse ou un changement à risque, demander un plan avant l’implémentation.
+
+Le plan doit être **reviewé avant de commencer à modifier le code** lorsque des erreurs de cadrage seraient coûteuses. L’objectif est de résoudre d’abord les ambiguïtés d’intention, d’architecture, de données et de sécurité.
+
+Pour une tâche locale, bornée et peu risquée, ne pas imposer une cérémonie inutile : un cycle `explore → implement → verify` peut être suffisant.
 
 Le plan doit préciser :
 
@@ -796,6 +895,13 @@ Le plan doit préciser :
 - les validations finales.
 
 Pour une correction locale simple, un plan formel est inutile.
+
+Après validation du plan :
+
+- travailler par petits incréments autonomes ;
+- vérifier chaque incrément avant d’élargir le scope ;
+- ne pas mélanger un refactor opportuniste non nécessaire à la tâche ;
+- réévaluer le plan si le repository réel contredit les hypothèses initiales.
 
 ---
 
@@ -936,6 +1042,30 @@ Avant une mise en production, vérifier au minimum :
 
 Ne lancer aucune action destructive sans validation explicite.
 
+### 20.1 Niveaux de preuve
+
+Ne pas confondre les niveaux suivants :
+
+1. **revue statique** : lecture du code / configuration ;
+2. **validation locale** : lint, build, tests, analyse statique ;
+3. **plan ou dry-run** : ce que l’outil prévoit de faire ;
+4. **intégration** : plusieurs composants testés ensemble ;
+5. **déploiement réel** : changement appliqué dans un environnement ;
+6. **preuve opérationnelle** : comportement observé, métriques, logs, health checks, données de sortie ou artefacts de validation.
+
+Une CI verte ne prouve pas qu’un système a été déployé avec succès. Un `terraform validate` ne prouve pas qu’un `plan/apply` réel fonctionne. Un mock vert ne prouve pas une intégration externe.
+
+Les affirmations du projet doivent toujours correspondre au niveau de preuve réellement obtenu.
+
+Pour une release significative, conserver selon le contexte :
+
+- notes de release ;
+- tag/version depuis un `main` validé ;
+- point ou stratégie de rollback ;
+- fenêtre de déploiement ;
+- impacts et points d’attention ;
+- preuves de validation suffisamment sanitizées pour être conservées.
+
 ---
 
 ## 21. Definition of Done standard
@@ -979,6 +1109,12 @@ Pour une feature significative, le travail est terminé lorsque :
 - ignorer les migrations ;
 - ignorer les tests ;
 - accepter un diff sans revue ;
+- travailler directement sur `main` pour une tâche significative ;
+- merger une PR draft ;
+- merger avec des checks obligatoires rouges ou une alerte sécurité non résolue ;
+- conclure qu’une branche doit être mergée uniquement à partir de `ahead_by` ou de sa liste de commits ;
+- confondre validation statique et preuve de déploiement réel ;
+- faire travailler plusieurs agents sur les mêmes fichiers sans coordination ;
 - créer des abstractions prématurées ;
 - sur-architecturer un besoin simple ;
 - conserver un thread devenu confus alors que le repository permet de repartir proprement.
@@ -1082,7 +1218,183 @@ Le repository devient ainsi progressivement meilleur pour les humains comme pour
 
 ---
 
-## 26. Principe final
+## 26. Choisir la bonne surface : Chat, Work ou Codex
+
+Avant de choisir un modèle ou un niveau de reasoning, choisir **l’environnement adapté au travail**.
+
+| Surface | Utiliser pour | Éviter comme choix naturel pour |
+| --- | --- | --- |
+| **Chat** | questions rapides, brainstorming, explications, recherche ponctuelle, préparation de décisions et de prompts | modifier durablement un repository ou conduire un workflow technique long |
+| **Work** | recherche longue, analyse multi-documents, dossiers, audits documentaires, rapports, présentations, feuilles de calcul et livrables multi-étapes | développement repo-centric nécessitant branches, commandes, tests et PR |
+| **Codex** | écrire ou debugger du code, explorer un repository, exécuter des commandes/tests, patcher, reviewer, refactorer et préparer des PR | tâches purement conversationnelles sans besoin du repository |
+
+Règle pratique :
+
+> **Dès que le repository, les tests, les commandes ou la PR sont au centre du problème, Codex devient l’environnement par défaut.**
+
+Chat peut servir à cadrer ou challenger une décision. Work est préférable lorsque le cœur de la tâche est un ensemble de sources et un livrable final. Codex est préférable lorsque le cœur de la tâche est l’état réel du logiciel.
+
+---
+
+## 27. Modèle, reasoning et orchestration
+
+> **Snapshot OpenAI : octobre 2026.** Les noms de modèles, prix, disponibilités et options produit peuvent évoluer. Vérifier les sources officielles avant d’en faire une contrainte durable.
+
+Le choix correct se fait sur **quatre dimensions distinctes** :
+
+1. **modèle** : capacité de base ;
+2. **reasoning effort** : quantité de raisonnement allouée ;
+3. **surface** : Chat, Work ou Codex ;
+4. **orchestration** : un agent ou plusieurs agents.
+
+Ne pas mélanger ces concepts. Changer de modèle, augmenter le reasoning et ajouter des agents résolvent des problèmes différents.
+
+### 27.1 Hiérarchie pratique des modèles
+
+| Modèle | Positionnement | Usage pratique |
+| --- | --- | --- |
+| **GPT-6 Luna** | le plus efficient | extraction, classification, transformations simples, tâches focalisées et volume élevé |
+| **GPT-6.1 Sol** | équilibre intelligence / coût | workhorse pour coding complexe, computer use et travail professionnel |
+| **GPT-6 Astra** | capacité maximale | problèmes les plus exigeants, architecture critique, recherche difficile, coding et computer use à enjeux élevés |
+| **GPT-6 Sol** | génération précédente | surtout continuité de benchmark, compatibilité ou migration contrôlée |
+
+Au 4 octobre 2026, les tarifs API standard publiés pour les modèles principaux sont :
+
+| Modèle | Input / 1M tokens | Output / 1M tokens |
+| --- | ---: | ---: |
+| GPT-6 Luna | $0.10 | $0.50 |
+| GPT-6.1 Sol | $2 | $10 |
+| GPT-6 Astra | $10 | $50 |
+
+Ces prix sont **informatifs et datés**. Ne pas les dupliquer dans des règles permanentes sans date ni source.
+
+### 27.2 Niveaux de reasoning
+
+Dans l’API, les niveaux disponibles dépendent du modèle et peuvent inclure :
+
+```text
+none / minimal / low / medium / high / xhigh / max
+```
+
+Pour GPT-6.1 Sol et GPT-6 Astra, la lecture pratique est :
+
+- **Low** : tâche claire, peu ambiguë, priorité à la vitesse ;
+- **Medium** : travail professionnel standard ;
+- **High** : architecture, coding sérieux, analyse complexe ;
+- **XHigh** : audit, sécurité, investigation ou recherche plus profonde ;
+- **Max** : problème difficile, coût d’omission élevé, priorité à la qualité.
+
+Augmenter l’effort uniquement quand le problème le justifie. Plus haut peut améliorer la qualité, mais augmente généralement usage et latence.
+
+Ne pas supposer qu’un modèle plus faible poussé au maximum est toujours meilleur qu’un modèle plus capable avec un effort plus bas. Comparer sur des cas représentatifs et garder **le réglage le plus léger qui satisfait le niveau de qualité requis**.
+
+> Note API : `reasoning.mode` (`standard` / `pro` lorsqu’il est supporté) et `reasoning.effort` sont deux réglages distincts.
+
+### 27.3 Max vs Ultra
+
+**Max** est un niveau de reasoning API / modèle lorsqu’il est supporté.
+
+**Ultra** est un choix produit de Work/Codex : il ne constitue pas un modèle distinct ni un niveau API supérieur à `max`. La documentation OpenAI indique qu’Ultra utilise le raisonnement maximal et peut lancer des agents supplémentaires pour les utilisateurs éligibles.
+
+Lecture pratique :
+
+- **Max** : profondeur maximale pour un problème cohérent traité par un agent principal ;
+- **Ultra** : max + possibilité de délégation lorsque plusieurs workstreams indépendants bénéficient réellement d’une exploration parallèle.
+
+### 27.4 Single-agent vs multi-agent
+
+Utiliser plusieurs agents lorsque la tâche se décompose en sous-problèmes **indépendants et bornés**, par exemple :
+
+- explorer des zones différentes d’un gros repository ;
+- comparer plusieurs hypothèses ou documents ;
+- investiguer plusieurs causes possibles d’un bug ;
+- réaliser une revue architecture, sécurité et tests en parallèle ;
+- implémenter des composants indépendants ou des suites de tests distinctes.
+
+Préférer **un seul agent** lorsque :
+
+- chaque étape dépend fortement de la précédente ;
+- la tâche est courte ;
+- plusieurs agents modifieraient le même état mutable ou les mêmes fichiers ;
+- un ordre déterministe est important ;
+- le coût de coordination dépasse le gain de parallélisme.
+
+Le multi-agent améliore surtout la **couverture et le parallélisme** ; il n’est pas une garantie automatique de meilleure qualité.
+
+---
+
+## 28. Routage pratique pour coding, architecture et audit
+
+La règle générale est :
+
+> **Commencer avec le plus petit niveau qui satisfait le besoin, puis escalader quand la complexité, l’ambiguïté ou le coût d’une omission le justifient.**
+
+### 28.1 Coding
+
+| Besoin | Surface | Modèle | Reasoning |
+| --- | --- | --- | --- |
+| Fonction / script simple | Codex | GPT-6.1 Sol | Medium |
+| Développement normal / feature | Codex | GPT-6.1 Sol | High |
+| Refactoring complexe / plusieurs fichiers | Codex | GPT-6.1 Sol | High → Max |
+| Debug difficile / bug non local | Codex | GPT-6.1 Sol | Max |
+| Architecture logicielle / sécurité critique | Codex | GPT-6 Astra | High → Max |
+| Gros repository + workstreams indépendants | Codex | GPT-6.1 Sol ou Astra | Ultra si le parallélisme apporte un gain réel |
+
+Raccourci recommandé pour un travail technique sérieux :
+
+```text
+GPT-6.1 Sol High
+      ↓ si nécessaire
+GPT-6.1 Sol Max
+      ↓ si enjeux / ambiguïté / criticité augmentent
+GPT-6 Astra High / Max
+      ↓ si plusieurs workstreams indépendants le justifient
+Ultra
+```
+
+### 28.2 Architecture Data/AI, Cloud et audit
+
+| Besoin | Routage pratique |
+| --- | --- |
+| Architecture Data/AI / Cloud standard | GPT-6.1 Sol High |
+| Trade-off stratégique ambigu / décision structurante | GPT-6 Astra High |
+| Audit code + docs, première passe détaillée | GPT-6.1 Sol Max |
+| Audit transverse / dernière passe / recherche d’omissions | GPT-6 Astra + Ultra si le travail est réellement parallélisable |
+| Extraction / inventaire massif à faible complexité par item | GPT-6 Luna |
+
+Pour un audit exigeant, une stratégie efficace peut être :
+
+1. **passe locale exhaustive** avec GPT-6.1 Sol Max ;
+2. **passe de challenge** avec Astra High sur les décisions et contradictions ;
+3. **passe transverse indépendante** avec Astra/Ultra lorsque plusieurs axes peuvent être examinés en parallèle.
+
+L’objectif n’est pas de multiplier les passes mécaniquement, mais de réduire les angles morts quand le coût d’une omission est élevé.
+
+### 28.3 Évaluation plutôt qu’intuition
+
+Pour un workflow récurrent :
+
+1. conserver quelques cas représentatifs ;
+2. comparer plusieurs modèles / efforts sur les mêmes entrées ;
+3. mesurer qualité, omissions, temps et coût ;
+4. choisir le niveau le plus léger qui passe le seuil attendu ;
+5. réévaluer lors d’un changement majeur de modèle ou de workflow.
+
+Les préférences de routage sont des **defaults**, pas des vérités absolues.
+
+### 28.4 Sources OpenAI — snapshot octobre 2026
+
+- Models: https://developers.openai.com/api/docs/models
+- GPT-6.1 Sol: https://developers.openai.com/api/docs/models/gpt-6.1-sol
+- GPT-6 Astra: https://developers.openai.com/api/docs/models/gpt-6-astra
+- Reasoning: https://developers.openai.com/api/docs/guides/reasoning
+- Multi-agent: https://developers.openai.com/api/docs/guides/responses-multi-agent
+- ChatGPT Work & Codex: https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+- ChatGPT rate card: https://help.openai.com/en/articles/11481834-chatgpt-rate-card-business-enterpriseedu-credit-based-pricing
+
+---
+
+## 29. Principe final
 
 Codex ne doit pas être utilisé comme une mémoire magique capable de reconstruire indéfiniment un logiciel depuis une conversation.
 
